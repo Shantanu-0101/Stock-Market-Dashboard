@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Generated artefacts (the committed Project_Report.pdf is kept, see below)
+deliverables/screenshots/
+deliverables/*_export.csv
+scratch/
+
+# Keep the deliverable report tracked even though PDFs are usually noise
+!deliverables/Project_Report.pdf
