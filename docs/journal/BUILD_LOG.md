@@ -45,3 +45,78 @@ Also: `enrich` adds every column even when the window exceeds the row count, fil
 **Check:** `deliverables/check_indicators.py` — **82 hand-computed assertions, all passing**. SMA(3) of [1,2,3,4] = [-,-,2,3]; EMA(2) of [1,2,3] = [1, 5/3, 23/9] from the recursion; RSI 100 on a rising series, 0 on a falling one, 50 on a flat one, 50 on a worked 3-period example; MACD identically 0 on a constant series and histogram == line - signal; Bollinger middle == SMA with bands at +/- 2 sample sd (sqrt(5/3) checked by hand); +10% then -10% compounding to -1%; drawdown -25%; the monthly pivot's cells and blank-vs-zero behaviour. The last block runs the whole thing against a live AAPL year, which is the only way to catch a dtype or column-name mismatch at the Phase 2/Phase 3 seam; it skips rather than fails when offline.
 
 Not done in this phase: charts, app, export — Phases 4 to 6.
+
+## 26 Nov 2026, 08:50 — Phase 4: charts
+
+Eight chart modules plus a shared theme, per Phase 4 of the plan. Every one is
+a pure `(data, options) -> plotly.graph_objects.Figure`; there is no Streamlit
+import anywhere in `src/charts/`, so `app.py`, the PDF generator and the
+notebook all call the same functions and cannot drift.
+
+- **`theme.py`** — registers one Plotly template (`stockdash`) extending
+  `plotly_white`, and `apply_theme()`, which every chart ends with. Also
+  `empty_figure()` and `skip_caption()`.
+- **`price_chart.py`** — close line plus any of SMA 20/50/200, EMA 12/26 and
+  Bollinger, the band drawn as one filled region rather than three competing
+  lines.
+- **`candlestick.py`** — candles over a volume subplot on a shared x-axis,
+  rangeslider off. `show_volume=False` gives the single panel the PDF needs.
+- **`volume_chart.py`** — bars coloured by the day's direction with the
+  20-day average line.
+- **`rsi_chart.py`** — RSI on a fixed 0–100 axis with shaded 70/30 zones.
+- **`macd_chart.py`** — line, signal and sign-coloured histogram, all on one
+  y-axis.
+- **`comparison.py`** — 2–5 tickers rebased to 100, plus `first_common_date()`.
+- **`heatmap.py`** — the monthly-returns grid and the daily-returns histogram.
+- **`correlation.py`** — annotated matrix, plus `returns_correlation()`.
+
+Five judgment calls worth recording:
+
+1. **Charts read indicator columns, they never recompute.** `price_chart` and
+   `macd_chart` take the enriched frame's `SMA_50`, `MACD_HIST` and so on, so
+   the line on screen and the number in the exported CSV are the same number
+   by construction.
+2. **Comparison rebases to the first *common* date**, found by intersecting
+   every ticker's index. Rebasing each series to its own first row looks right
+   and is wrong: US markets, `.NS` and crypto keep different calendars, so
+   AAPL's first row may be a day RELIANCE.NS did not trade, and the error
+   compounds across the range.
+3. **The correlation matrix is computed on returns, not prices**, departing
+   from the spec's wording. Two unrelated stocks that both drifted up over a
+   year show a price correlation near 0.9 because the shared trend dominates.
+   The check file asserts the difference rather than just asserting it runs.
+4. **Nothing raises when there is no data to draw.** Every chart returns a
+   themed figure carrying an explanation — "these tickers share no common
+   trading day in this range" — so the app renders results unconditionally
+   and the user reads why a panel is blank.
+5. **The returns histogram lives in `heatmap.py`** rather than a ninth module.
+   The spec puts both on the Returns Analysis tab and both answer the same
+   question — how the returns are distributed — one by calendar month, one by
+   magnitude.
+
+The fixed y-axis on RSI and the fixed −1..1 scale on the correlation matrix
+are the same decision twice: both quantities are bounded by definition, and
+autoscaling makes a quiet series look violent and a weak correlation look
+strong.
+
+**Check:** `deliverables/check_charts.py` — **46 structural assertions, all
+passing**, then every figure written to HTML and opened in the browser. The
+assertions cover trace counts and types, the RSI axis range, the rangeslider
+being off on both candlestick rows, the short-range skip captions naming the
+window and the row count, every comparison series sitting at exactly 100 on
+the shared base date, the histogram being coloured by sign, and the
+returns-vs-price correlation difference. `--live` reruns the lot against real
+Yahoo data; today that was AAPL (753 rows), RELIANCE.NS (739) and BTC-USD
+(1094), all three rendering with no crashes and no empty traces.
+
+The visual pass found four layout faults the assertions could not: a
+horizontal legend listing traces in reverse, so "Close" sat in the middle of
+its own overlays; the legend overlapping the title on 300px panels; the
+caption annotation landing on top of the x-axis title, because Plotly's
+annotation `y` is a fraction of the plot area and a fixed −0.16 means
+different pixel offsets at different heights; and RELIANCE.NS clipped off the
+correlation matrix's y-axis. All four fixed in `theme.py` and the two heatmap
+modules. The preview HTML goes to `deliverables/chart_preview/`, now
+gitignored.
+
+Not done in this phase: the app, export and deliverables — Phases 5 to 9.
