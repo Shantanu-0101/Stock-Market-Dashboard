@@ -50,7 +50,18 @@ def register_template() -> str:
     template["layout"].update(
         {
             "font": {"family": "Inter, Segoe UI, system-ui, sans-serif", "size": 13},
-            "title": {"font": {"size": 18}, "x": 0.0, "xanchor": "left"},
+            # Pinned to the top of the figure. Left to itself Plotly centres
+            # the title in the top margin, where a legend wrapping in a narrow
+            # window grows straight into it.
+            "title": {
+                "font": {"size": 18},
+                "x": 0.0,
+                "xanchor": "left",
+                "yref": "container",
+                "y": 1.0,
+                "yanchor": "top",
+                "pad": {"t": 10},
+            },
             "margin": {"l": 56, "r": 24, "t": 56, "b": 44},
             "hovermode": "x unified",
             "hoverlabel": {"namelength": -1},
@@ -76,6 +87,10 @@ def register_template() -> str:
                 "gridcolor": "#EEF2F7",
                 "zeroline": False,
                 "showline": False,
+                # Widen the margin for long tick labels ("60,500.00"), which
+                # otherwise run into the axis title.
+                "automargin": True,
+                "title": {"standoff": 8},
             },
         }
     )
@@ -109,7 +124,8 @@ def apply_theme(
     # barely any plot area to give up.
     if showlegend and len(fig.data) > 0:
         legend_rows = -(-len(fig.data) // 4)  # ceil
-        top = 56 + 22 * (legend_rows - 1)
+        # Even a single legend row needs its own space under the title.
+        top = 78 + 22 * (legend_rows - 1)
         if height <= config.CHART_HEIGHT_SHORT:
             top += 20
     else:

@@ -181,3 +181,39 @@ then every tab clicked through in the browser at 1440x900.
 
 Not done in this phase: the PDF generator, notebook, project report and
 README — Phases 6 to 9.
+
+## 26 Nov 2026, 09:28 — Phase 6: export
+
+The PDF report, and the sidebar button that was disabled in Phase 5.
+
+- **`src/export/pdf_report.py`** — `build_report(ticker, info, df, kpis)`
+  returns a one-page A4 PDF: heading, the eight KPI cards, price with SMA
+  50/200 and Bollinger, RSI, the indicator summary and the disclaimer.
+- **`src/export/commentary.py`** — the rules-based sentences: RSI zone, close
+  against SMA 50/200, MACD sign and signal position, 21-day volatility against
+  its own median (within 10% counts as "in line"). It describes and never says
+  buy, sell or hold. A range too short for an indicator says so.
+- **`src/kpis.py`** — the KPI logic moved out of `app.py`, so the page and the
+  PDF print the same cards from one function.
+- **`app.py`** — the PDF button passes a callable to `st.download_button`, so
+  the few seconds of chart export are paid on click, not on every rerun.
+- **CSV** — already wired in Phase 5; confirmed 251 rows with the 19
+  indicator columns for AAPL 1Y.
+
+Judgment calls:
+
+1. **Built-in PDF fonts with Windows-1252**, not an embedded Unicode font,
+   so the report depends on no font file. The rupee sign prints as "Rs ";
+   characters outside the code page print as "?".
+2. **A failed chart export does not fail the report.** kaleido needs a local
+   Chrome; without it each chart is replaced by a line saying why.
+3. **The PDF chart overlays are fixed** (SMA 50/200, Bollinger) rather than
+   following the sidebar, because they are what the summary talks about. The
+   RSI variant does follow the sidebar and is named on the page.
+
+**Check:** `deliverables/check_export.py`, 28 assertions passing;
+`check_charts.py` passing. Live reports generated and read for AAPL 1Y,
+RELIANCE.NS 1Y and BTC-USD 1W, one page each. In the running app, both export
+buttons appear and every tab's legend clears its title at 1440 wide. The
+button callables were run from `app.main()` on a worker thread; the browser
+download click itself was not exercised.

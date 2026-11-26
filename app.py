@@ -17,6 +17,7 @@ Run it with::
 from __future__ import annotations
 
 import datetime as _dt
+from functools import partial
 
 import pandas as pd
 import streamlit as st
@@ -41,23 +42,15 @@ from src.data.fetcher import (
     normalise_ticker,
     resolve_date_range,
 )
-from src.formatting import (
-    format_compact,
-    format_date,
-    format_money,
-    format_percent,
-    format_volume,
-    title_case_name,
-)
+from src.export.pdf_report import build_report
+from src.formatting import title_case_name
 from src.indicators import (
     RSI_VARIANTS,
-    annualized_volatility,
     enrich,
     indicator_columns,
-    period_return,
     periods_per_year_for,
-    ytd_return,
 )
+from src.kpis import KpiSummary, kpi_summary
 
 st.set_page_config(
     page_title=config.APP_TITLE,
@@ -178,61 +171,20 @@ def sidebar() -> dict:
 # --------------------------------------------------------------------------
 
 
-def kpi_row(df: pd.DataFrame, info: dict) -> None:
-    """The seven cards across the top of the page.
+def kpi_row(summary: KpiSummary) -> None:
+    """The eight cards across the top of the page.
 
-    Price and the daily change come from the fetched frame, not from
-    ``info``: ``fast_info``'s ``lastPrice`` is a live quote that can disagree
-    with the last row of a historical range the user chose, and a card that
-    contradicts the chart below it is worse than one that is slightly stale.
-
-    The 52-week range is the opposite case -- it is a property of the stock,
-    not of the selected window, so it comes from ``info`` and falls back to
-    the frame's own high/low only when Yahoo supplied nothing, labelled so
-    the reader knows which they are looking at.
+    What goes in each card is decided in :func:`src.kpis.kpi_summary`, which
+    the PDF report prints from too.
     """
-    close = df["Close"]
-    currency = info.get("currency")
-
-    last = float(close.iloc[-1])
-    previous = float(close.iloc[-2]) if len(close) > 1 else None
-    change = (last / previous - 1.0) if previous else None
-
-    high_52 = info.get("week52_high")
-    low_52 = info.get("week52_low")
-    range_source = "Yahoo"
-    if high_52 is None or low_52 is None:
-        high_52 = float(df["High"].max())
-        low_52 = float(df["Low"].min())
-        range_source = "this range"
-
-    periods = periods_per_year_for(info.get("quote_type"))
-    volatility = annualized_volatility(close, periods=periods)
-
-    cards = (
-        ("Price", format_money(last, currency), format_percent(change) if change is not None else None),
-        ("52w high", format_money(high_52, currency), None),
-        ("52w low", format_money(low_52, currency), None),
-        ("YTD return", format_percent(ytd_return(close)), None),
-        ("Market cap", format_compact(info.get("market_cap"), currency), None),
-        ("P/E", format_money(info.get("pe_ratio"), None), None),
-        ("Avg volume", format_volume(info.get("avg_volume")), None),
-        ("Volatility", format_percent(volatility, signed=False), None),
-    )
     # Four to a row, not all eight across: a metric value is ellipsised rather
     # than wrapped, so eight columns turn "$3.21T" into "$3...". Two rows of
     # four stay readable down to a narrow window.
     for start in (0, 4):
-        for column, (label, value, delta) in zip(st.columns(4), cards[start : start + 4]):
-            column.metric(label, value, delta)
+        for column, card in zip(st.columns(4), summary.cards[start : start + 4]):
+            column.metric(card.label, card.value, card.delta)
 
-    st.caption(
-        f"{len(df)} trading days, {format_date(df.index.min())} to "
-        f"{format_date(df.index.max())}. Period return "
-        f"{format_percent(period_return(close))}. Volatility is annualised "
-        f"over this range on {periods} periods a year; the 52-week range is "
-        f"from {range_source}."
-    )
+    st.caption(summary.footnote)
 
 
 # --------------------------------------------------------------------------
@@ -340,7 +292,8 @@ def main() -> None:
     if details:
         st.caption(" | ".join(details))
 
-    kpi_row(df, info)
+    summary = kpi_summary(df, info)
+    kpi_row(summary)
     st.divider()
 
     # The comparison set always includes the main ticker, so Tab 4 shows the
@@ -378,32 +331,50 @@ def main() -> None:
         )
         st.dataframe(df, use_container_width=True)
 
-    export_sidebar(df, ticker)
+    export_sidebar(df, info, summary, choices)
     st.caption(config.DISCLAIMER)
 
 
-def export_sidebar(df: pd.DataFrame, ticker: str) -> None:
+def export_sidebar(
+    df: pd.DataFrame, info: dict, summary: KpiSummary, choices: dict
+) -> None:
     """The download buttons, drawn once the frame exists.
 
     They are added to the sidebar from here rather than from :func:`sidebar`
-    because the CSV cannot be built before the data is fetched, and a button
+    because neither file can be built before the data is fetched, and a button
     that is present but dead until a later rerun is worse than one that
     appears with its payload ready.
+
+    The PDF is passed as a callable: exporting its charts takes several
+    seconds, which should be paid on click and not on every widget change.
     """
+    ticker = choices["ticker"]
+    stem = f"{ticker}_{df.index.min():%Y%m%d}_{df.index.max():%Y%m%d}"
     with st.sidebar:
         st.divider()
         st.subheader("Export")
         st.download_button(
             "Download CSV",
             data=df.to_csv().encode("utf-8"),
-            file_name=f"{ticker}_{df.index.min():%Y%m%d}_{df.index.max():%Y%m%d}.csv",
+            file_name=f"{stem}.csv",
             mime="text/csv",
             use_container_width=True,
         )
-        st.button(
+        st.download_button(
             "Download PDF report",
-            disabled=True,
-            help="Arrives with the PDF generator in Phase 6.",
+            data=partial(
+                build_report,
+                ticker,
+                info,
+                df,
+                summary,
+                rsi_variant=choices["rsi_variant"],
+            ),
+            file_name=f"{stem}_report.pdf",
+            mime="application/pdf",
+            on_click="ignore",
+            help="One page: KPIs, price and RSI charts, indicator summary. "
+            "Takes a few seconds to build.",
             use_container_width=True,
         )
 

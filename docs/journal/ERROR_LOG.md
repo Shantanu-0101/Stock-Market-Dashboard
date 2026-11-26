@@ -91,3 +91,18 @@ traces, adding "Bollinger needs 20 rows; this range has 5; band not drawn."
 to the caption beside the SMA and EMA notes. `check_charts.py` gained two
 assertions built on `enrich(synthetic_ohlcv(rows=5))` — a genuinely short
 fetch, the shape the app produces — bringing it to 48.
+
+## 26 Nov 2026, 09:25 — chart titles collided with legends
+
+**What happened.** The first 1W report printed the "Close" legend across the
+chart title, and the "Price" axis title over five-figure tick labels. The
+running app at 800px wide showed the same collision on Tab 1, where the legend
+wraps to three rows.
+
+**Why it mattered.** Plotly centres a title in the top margin, so enlarging
+the margin moves the title down towards the legend. The Phase 4 and 5 visual
+passes were on wider windows with smaller prices.
+
+**Fix.** In `theme.py` the title is pinned to the top of the figure, a single
+legend row gets a 78px top margin, and the y-axis uses `automargin` with a
+title standoff. Re-checked in the PDF and the app.
