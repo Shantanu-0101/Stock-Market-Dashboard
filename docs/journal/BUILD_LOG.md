@@ -120,3 +120,64 @@ modules. The preview HTML goes to `deliverables/chart_preview/`, now
 gitignored.
 
 Not done in this phase: the app, export and deliverables — Phases 5 to 9.
+
+## 26 Nov 2026, 08:59 — Phase 5: Streamlit app
+
+`app.py`, plus `src/formatting.py` and a pinned `.streamlit/config.toml`. The
+app orchestrates and nothing else: it reads widgets, calls the data layer,
+hands the frame to `enrich()`, passes it to the chart functions and lays the
+results out. No indicator arithmetic and no figure construction in this file.
+
+- **Sidebar** — ticker with a demo-symbol caption, date preset plus custom
+  pickers, per-window SMA/EMA checkboxes, Bollinger toggle, the RSI variant
+  selectbox from decision 0.3, a compare multiselect capped so the total
+  stays at five, and the export buttons.
+- **KPI row** — eight cards: price with its daily change, 52-week high and
+  low, YTD return, market cap, P/E, average volume and annualised volatility.
+- **Five tabs** exactly as the spec's wireframe lays them out, then an
+  expandable data table of the enriched frame.
+- **`src/formatting.py`** — `format_money`, `format_compact`, `format_percent`,
+  `format_volume`, `title_case_name`. Presentation only, outside `app.py`
+  because the Phase 6 PDF must print the same KPI row with the same rounding
+  and the same em dash for a missing value.
+
+Four judgment calls worth recording:
+
+1. **Charts are rendered with `theme=None`.** Streamlit's default
+   `theme="streamlit"` overwrites a figure's template — colours, fonts,
+   legend placement, margins — so the dashboard and the PDF would show
+   visibly different charts from the same call. `None` keeps the template
+   `src/charts/theme.py` registers, which is the entire reason it exists.
+2. **The page is pinned to the light base** in `.streamlit/config.toml`. The
+   charts are built on `plotly_white`; on a dark OS theme Streamlit would
+   otherwise put white charts on a near-black page.
+3. **Price and the daily change come from the fetched frame, not from
+   `info`.** `fast_info`'s `lastPrice` is a live quote that disagrees with
+   the last row of a historical range the user picked, and a card that
+   contradicts the chart under it is worse than one that is slightly stale.
+   The 52-week range is the opposite — a property of the stock, not of the
+   window — so it comes from `info`, falls back to the frame's own high/low,
+   and the caption says which of the two is on screen.
+4. **The comparison set always includes the main ticker**, so Tab 4 shows the
+   stock the rest of the page is about rather than only its peers.
+
+The PDF button is present but disabled, with a help note pointing at Phase 6.
+A button that is visible and dead until a later phase is worse than one that
+says why it is dead.
+
+**Check (ran the real app, not just a typecheck):** `streamlit run app.py`,
+then every tab clicked through in the browser at 1440x900.
+
+- AAPL 1Y: all eight KPIs populated, five tabs rendering, 251 rows and 24
+  columns in the data table.
+- AAPL 1W: SMA 20/50 and the Bollinger band correctly skipped with captions
+  naming the rows needed; the correlation matrix carries its "only 4
+  overlapping days" warning.
+- BTC-USD: P/E renders as an em dash, volatility annualises on 365 periods
+  rather than 252, seven rows in a week because crypto trades weekends.
+- `NOTATICKER123`: the error panel with the ticker-format hint, no traceback,
+  no half-drawn page. The only entry in the server log is yfinance's expected
+  404 for that symbol.
+
+Not done in this phase: the PDF generator, notebook, project report and
+README — Phases 6 to 9.

@@ -1,0 +1,11 @@
+# The charts are built on Plotly's "plotly_white" template and are rendered
+# with theme=None so the dashboard, the PDF report and the notebook all show
+# the same figure. Pinning the page to the light base keeps the page around
+# those charts consistent too -- on a dark OS theme Streamlit would otherwise
+# put white charts on a near-black page.
+[theme]
+base = "light"
+primaryColor = "#2563EB"
+
+[browser]
+gatherUsageStats = false

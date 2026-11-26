@@ -67,3 +67,27 @@ legend. Also set `legend.traceorder="normal"` — a horizontal Plotly legend
 otherwise lists traces in reverse, putting "Close" in the middle of its own
 overlays — and `automargin=True` on both heatmap axes, since RELIANCE.NS is
 twice the width of AAPL and was being clipped.
+
+## 26 Nov 2026, 08:55 — the Bollinger band promised a band it had not drawn
+
+**What happened.** On the running app with a 1W range, Tab 1's legend showed
+"Bollinger (20, 2 sd)", "Bollinger middle (SMA 20)" and a band entry, while
+no band was on the chart. Over five rows every `BB_UPPER` / `BB_LOWER` value
+is NaN, so the traces were added and drew nothing.
+
+**Why it mattered.** This is the exact fault `available_windows()` exists to
+prevent, and I had applied it to the moving averages and then not to the
+Bollinger overlay three lines below — the one overlay that is on by default.
+A legend entry is a promise that a series is on the chart; three of them
+pointing at nothing makes the user hunt for a band that cannot be there.
+
+It also shows the limit of the Phase 4 check file: 46 assertions passed over
+a frame enriched on 900 rows, because the short-range case was tested by
+slicing an already-enriched frame rather than by enriching a short one. The
+fault only appeared when a real 1W fetch went through the real app.
+
+**Fix.** `price_chart` now tests `BB_UPPER.dropna().empty` and skips all three
+traces, adding "Bollinger needs 20 rows; this range has 5; band not drawn."
+to the caption beside the SMA and EMA notes. `check_charts.py` gained two
+assertions built on `enrich(synthetic_ohlcv(rows=5))` — a genuinely short
+fetch, the shape the app produces — bringing it to 48.

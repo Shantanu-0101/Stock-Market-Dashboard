@@ -55,7 +55,17 @@ def price_chart(
 
     fig = go.Figure()
 
-    if show_bollinger and {"BB_UPPER", "BB_LOWER"} <= set(df.columns):
+    # Bollinger needs the same guard as the moving averages: over fewer rows
+    # than its window every band value is NaN, and the three legend entries
+    # would promise a band that is not on the chart.
+    bollinger_possible = (
+        show_bollinger
+        and {"BB_UPPER", "BB_LOWER"} <= set(df.columns)
+        and not df["BB_UPPER"].dropna().empty
+    )
+    bollinger_skipped = show_bollinger and not bollinger_possible
+
+    if bollinger_possible:
         band_label = (
             f"Bollinger ({config.BOLLINGER_WINDOW}, "
             f"{config.BOLLINGER_NUM_STD:g} sd)"
@@ -148,6 +158,12 @@ def price_chart(
         for part in (
             skip_caption(skipped_sma, rows, "SMA"),
             skip_caption(skipped_ema, rows, "EMA"),
+            (
+                f"Bollinger needs {config.BOLLINGER_WINDOW} rows; this range "
+                f"has {rows}; band not drawn."
+                if bollinger_skipped
+                else ""
+            ),
         )
         if part
     )

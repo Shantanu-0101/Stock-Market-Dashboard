@@ -155,8 +155,31 @@ def check_price_chart(enriched: pd.DataFrame, out: Path) -> None:
     check("no caption when every window fits", not fig.layout.annotations)
     write(fig, out, "01_price_overlays")
 
-    # Short range: SMA 50/200 and EMA 26 cannot be computed.
-    short = enriched.tail(23)
+    # Short range: a 5-row fetch, as a 1W preset gives. Nothing but the close
+    # and the shortest EMA can be computed over it, and the Bollinger band is
+    # all NaN -- its three legend entries must not promise a band that is not
+    # drawn, which is the fault the running app showed.
+    tiny = enrich(synthetic_ohlcv(rows=5))
+    fig_tiny = price_chart(
+        tiny,
+        ticker="SYNTH",
+        sma_windows=config.SMA_WINDOWS,
+        ema_spans=config.EMA_SPANS,
+        show_bollinger=True,
+    )
+    tiny_names = [trace.name for trace in fig_tiny.data]
+    check(
+        "an all-NaN Bollinger band draws no traces",
+        not any("Bollinger" in str(name) for name in tiny_names),
+        f"got {tiny_names}",
+    )
+    check(
+        "and the caption says the band was skipped",
+        "Bollinger" in " ".join(a.text for a in fig_tiny.layout.annotations),
+    )
+
+    # A 23-row range: SMA 50/200 and EMA 26 cannot be computed.
+    short = enrich(synthetic_ohlcv(rows=23))
     fig_short = price_chart(
         short,
         ticker="SYNTH",

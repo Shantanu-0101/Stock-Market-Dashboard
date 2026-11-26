@@ -101,10 +101,19 @@ def apply_theme(
     the figure, not to the Streamlit page, so it survives into the PDF and the
     exported HTML.
     """
-    # A 300px panel has barely any plot area, so the default top margin leaves
-    # the horizontal legend sitting on top of the title. Short charts get more
-    # room above; tall ones do not need it.
-    top = 76 if (showlegend and height <= config.CHART_HEIGHT_SHORT) else 56
+    # The horizontal legend sits above the plot area and grows upward into the
+    # title when it wraps, which it does as soon as the container is narrow --
+    # a price chart with three overlays and a Bollinger band has six entries
+    # and wraps in any half-width column. Budget a row of legend per four
+    # traces, and give a 300px panel extra room on top of that, since it has
+    # barely any plot area to give up.
+    if showlegend and len(fig.data) > 0:
+        legend_rows = -(-len(fig.data) // 4)  # ceil
+        top = 56 + 22 * (legend_rows - 1)
+        if height <= config.CHART_HEIGHT_SHORT:
+            top += 20
+    else:
+        top = 56
     bottom = 86 if caption else 44
 
     fig.update_layout(
