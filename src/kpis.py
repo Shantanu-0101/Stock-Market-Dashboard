@@ -48,8 +48,8 @@ def kpi_summary(df: pd.DataFrame, info: dict) -> KpiSummary:
 
     Price and the daily change come from the fetched frame, not from
     ``info``: ``fast_info``'s ``lastPrice`` is a live quote that can disagree
-    with the last row of a historical range the user chose, and a card that
-    contradicts the chart below it is worse than one that is slightly stale.
+    with the last row of the fetched range, and a card that contradicts the
+    chart below it is worse than one that is slightly stale.
 
     The 52-week range is the opposite case -- it is a property of the stock,
     not of the selected window, so it comes from ``info`` and falls back to

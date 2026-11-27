@@ -1,8 +1,8 @@
 """Relative Strength Index, in both the spec's form and Wilder's original.
 
-The two give visibly different numbers on the same series, so which one is on
-screen is the user's choice (decision 0.3 of IMPLEMENTATION_PLAN.md) defaulting
-to the spec's :func:`rsi`.
+The two give visibly different numbers on the same series, so the Power BI
+report has a slicer for the formula (decision 0.3 of IMPLEMENTATION_PLAN.md),
+defaulting to the spec's :func:`rsi`.
 """
 
 from __future__ import annotations

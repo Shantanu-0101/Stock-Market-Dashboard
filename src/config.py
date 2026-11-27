@@ -1,7 +1,7 @@
-"""Single source of truth for project defaults, windows, presets and colours.
+"""Single source of truth for project defaults, indicator windows and colours.
 
 Nothing in here imports pandas or plotly, so every other module
-(and the notebook, and the PDF generator) can read these constants cheaply.
+(and the walkthroughs, and the report generator) can read these constants cheaply.
 """
 
 from __future__ import annotations
@@ -20,29 +20,6 @@ DEMO_TICKERS: tuple[str, ...] = (
     "TCS.NS",
     "BTC-USD",
 )
-
-#: Upper bound for the multi-stock comparison tab (spec says 2-5 stocks).
-MIN_COMPARE_TICKERS: int = 2
-MAX_COMPARE_TICKERS: int = 5
-
-# --------------------------------------------------------------------------
-# Date ranges
-# --------------------------------------------------------------------------
-
-#: Preset label -> lookback in calendar days. ``None`` means "ask the user".
-#: Calendar days, not trading days: yfinance takes calendar dates and the
-#: exchange calendar decides how many rows come back.
-DATE_PRESETS: dict[str, int | None] = {
-    "1W": 7,
-    "1M": 30,
-    "3M": 91,
-    "6M": 182,
-    "1Y": 365,
-    "5Y": 365 * 5,
-    "Custom": None,
-}
-
-DEFAULT_PRESET: str = "1Y"
 
 # --------------------------------------------------------------------------
 # Indicator windows (all from the SPEC.md indicator table)
@@ -90,7 +67,7 @@ COLOR_PRICE: str = "#2563EB"     # close-price line
 COLOR_NEUTRAL: str = "#64748B"   # axes, reference lines, muted text
 COLOR_BAND: str = "rgba(37, 99, 235, 0.12)"  # Bollinger / RSI band fill
 
-#: Deterministic palette for multi-series charts (comparison tab, overlays).
+#: Deterministic palette for multi-series charts (comparison, overlays).
 #: Ordered so adjacent series stay distinguishable.
 SERIES_PALETTE: tuple[str, ...] = (
     "#2563EB",
@@ -100,7 +77,7 @@ SERIES_PALETTE: tuple[str, ...] = (
     "#0891B2",
 )
 
-#: Per-overlay colours so SMA-50 is the same colour in the app and the PDF.
+#: Per-overlay colours so SMA-50 is the same colour in the notebook and the PDF.
 OVERLAY_COLORS: dict[str, str] = {
     "SMA_20": "#F59E0B",
     "SMA_50": "#8B5CF6",
@@ -121,7 +98,6 @@ CHART_HEIGHT_SHORT: int = 300
 # --------------------------------------------------------------------------
 
 APP_TITLE: str = "Stock Market Dashboard"
-APP_ICON: str = "📈"
 MISSING_VALUE_DISPLAY: str = "—"
 
 #: Shown wherever the rules-based commentary appears (PDF, Power BI report).

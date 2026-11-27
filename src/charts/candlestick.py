@@ -1,4 +1,4 @@
-"""Tab 2 (upper panel): OHLC candles with volume in a shared-x subplot."""
+"""OHLC candles with volume in a shared-x subplot."""
 
 from __future__ import annotations
 
@@ -30,8 +30,8 @@ def candlestick_chart(
     duplicates zoom that the modebar and scroll already provide; on a two-row
     figure it also detaches from the subplot it is meant to control.
 
-    ``show_volume=False`` returns the single-panel version, which is what the
-    PDF uses: at page width the volume strip is too short to read.
+    ``show_volume=False`` returns the single-panel version, for a space where
+    the volume strip would be too short to read.
     """
     required = {"Open", "High", "Low", "Close"}
     if df is None or df.empty or not required <= set(df.columns):

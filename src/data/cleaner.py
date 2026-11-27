@@ -71,7 +71,7 @@ def _normalise_index(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
             ) from exc
 
     # Crypto and some exchanges come back tz-aware; mixing tz-aware and naive
-    # indices breaks joins in the comparison tab, so everything is made naive.
+    # indices breaks joins across tickers, so everything is made naive.
     if out.index.tz is not None:
         out.index = out.index.tz_localize(None)
 

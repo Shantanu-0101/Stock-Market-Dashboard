@@ -1,4 +1,4 @@
-"""Tab 5: correlation between the selected tickers, computed on returns."""
+"""Correlation between tickers, computed on daily returns."""
 
 from __future__ import annotations
 

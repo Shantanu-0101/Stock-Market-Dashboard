@@ -1,4 +1,4 @@
-"""Tab 1: close price with any combination of SMA, EMA and Bollinger overlays."""
+"""Close price with any combination of SMA, EMA and Bollinger overlays."""
 
 from __future__ import annotations
 

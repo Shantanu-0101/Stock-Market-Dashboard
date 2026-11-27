@@ -1,4 +1,4 @@
-"""Tab 3 (lower panel): MACD line, signal line and the histogram."""
+"""MACD line, signal line and the histogram."""
 
 from __future__ import annotations
 

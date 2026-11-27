@@ -4,10 +4,10 @@ Import the individual formulas from here::
 
     from src.indicators import sma, rsi, macd, bollinger_bands
 
-but reach for :func:`enrich` whenever a whole frame is wanted. The CSV export,
-the data table, the charts and the notebook all call it, so the derived columns
-are produced in exactly one place and cannot drift between the dashboard and
-the download the user takes away.
+but reach for :func:`enrich` whenever a whole frame is wanted. The Power BI
+export, the PDF reports and the walkthroughs all call it, so the derived
+columns are produced in exactly one place and cannot drift between the
+dashboard and the CSV behind it.
 """
 
 from __future__ import annotations
@@ -57,7 +57,7 @@ __all__ = [
 ]
 
 #: Display name -> function, for decision 0.3 of the implementation plan.
-#: The spec's version is first so it is the default in a selectbox.
+#: The spec's version is first, and is the default everywhere.
 RSI_VARIANTS = {
     "Spec (rolling mean)": rsi,
     "Wilder (standard)": rsi_wilder,
@@ -110,8 +110,8 @@ def indicator_columns(
 ) -> list[str]:
     """The column names :func:`enrich` adds, in the order it adds them.
 
-    Exported so the CSV writer and the data table can describe their own
-    contents without recomputing anything, and so a test can assert the
+    Exported so the walkthroughs and the project report can list the
+    columns without recomputing anything, and so a test can assert the
     spec's "at least 8 indicator columns" without hard-coding a list.
     """
     names = [f"SMA_{w}" for w in sma_windows]

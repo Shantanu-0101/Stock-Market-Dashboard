@@ -1,4 +1,4 @@
-"""Tab 4: several tickers rebased to a common start, so they can be compared."""
+"""Several tickers rebased to a common start, so they can be compared."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ BASE_VALUE: float = 100.0
 def first_common_date(frames: Mapping[str, pd.DataFrame]) -> pd.Timestamp | None:
     """The earliest date on which *every* frame has a close price.
 
-    This is the whole reason the comparison tab needs its own helper. Rebasing
+    This is the whole reason the comparison chart needs its own helper. Rebasing
     each series to its own first row looks right and is wrong: US markets,
     ``.NS`` tickers and crypto keep different calendars, so AAPL's first row
     may be a day that RELIANCE.NS did not trade, and crypto has rows on
@@ -55,7 +55,7 @@ def comparison_chart(
         Symbol to cleaned (or enriched) frame, as
         :func:`src.data.fetcher.fetch_many` returns. Frames that are empty or
         have no ``Close`` are skipped rather than failing the whole chart --
-        one dead symbol in a five-way comparison must not blank the tab.
+        one dead symbol in a five-way comparison must not blank the chart.
     normalise:
         ``True`` plots percentage growth from a shared base, which is the only
         way a 250-dollar stock and a 90,000-dollar coin fit on one axis.
@@ -63,8 +63,7 @@ def comparison_chart(
         currency and a similar price range.
 
     A single usable frame still draws: the chart is then just that ticker's
-    growth, which is a reasonable thing to look at while the user picks a
-    second symbol.
+    growth.
     """
     usable = {
         symbol: frame

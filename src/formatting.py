@@ -21,7 +21,6 @@ __all__ = [
     "format_compact",
     "format_date",
     "format_money",
-    "format_number",
     "format_percent",
     "format_volume",
     "currency_symbol",
@@ -57,13 +56,6 @@ def currency_symbol(currency: str | None) -> str:
     if not currency:
         return ""
     return CURRENCY_SYMBOLS.get(currency.upper(), f"{currency.upper()} ")
-
-
-def format_number(value: Any, decimals: int = 2) -> str:
-    """Thousands-separated fixed-point, or an em dash."""
-    if _is_missing(value):
-        return _MISSING
-    return f"{float(value):,.{decimals}f}"
 
 
 def format_money(value: Any, currency: str | None = None, decimals: int = 2) -> str:

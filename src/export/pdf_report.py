@@ -1,8 +1,8 @@
 """The one-page PDF summary: KPIs, two charts and a mechanical commentary.
 
-The charts are the same functions the dashboard calls, exported to PNG through
-kaleido, and the KPI table is the same :class:`~src.kpis.KpiSummary` the page
-draws as cards. Nothing here computes an indicator.
+The charts are the same functions the walkthroughs call, exported to PNG
+through kaleido, and the KPI table is the :class:`~src.kpis.KpiSummary` built
+for the same frame. Nothing here computes an indicator.
 
 kaleido drives a locally installed Chrome (or Chromium). Where that is missing
 the report is still produced, with a line in place of each chart saying why.
@@ -48,7 +48,7 @@ def _safe(text: str) -> str:
     """Make ``text`` printable with the PDF's built-in Windows-1252 fonts.
 
     Embedding a Unicode font would tie the report to a file on this machine.
-    The built-in fonts cover the em dash and the currency symbols the app
+    The built-in fonts cover the em dash and the currency symbols the project
     uses; the rupee sign is spelled out and anything else becomes ``?``.
     """
     text = text.replace("₹", "Rs ").replace("−", "-")
@@ -84,7 +84,7 @@ def _header(pdf: FPDF, ticker: str, info: dict, generated: _dt.date, last: objec
 
 
 def _kpi_table(pdf: FPDF, kpis: KpiSummary) -> None:
-    """The cards as a ruled grid, four across like the dashboard."""
+    """The cards as a ruled grid, four across."""
     width = pdf.epw / _KPI_COLUMNS
     pdf.set_draw_color(*_RULE)
     top = pdf.get_y()
@@ -164,7 +164,7 @@ def build_report(
     Parameters
     ----------
     ticker:
-        The symbol as the user sees it.
+        The symbol, printed in the heading.
     info:
         The result of :func:`src.data.fetcher.fetch_company_info`; every field
         may be missing.

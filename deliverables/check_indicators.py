@@ -64,7 +64,7 @@ def close_to(a: float, b: float, tol: float = 1e-9) -> bool:
 
 
 def series(values: list[float], start: str = "2026-01-01") -> pd.Series:
-    """A daily series on a real DatetimeIndex, as the app always has."""
+    """A daily series on a real DatetimeIndex, as fetched data always has."""
     index = pd.date_range(start=start, periods=len(values), freq="D", name="Date")
     return pd.Series(values, index=index, dtype="float64")
 
@@ -384,10 +384,12 @@ print("\nLive data seam — Phase 2 into Phase 3")
 # fetcher's contract and enrich(). Skipped without failing when offline, so
 # this file stays runnable on a train.
 try:
-    from src.data import DataQualityError, fetch_ohlcv, resolve_date_range
+    import datetime as dt
 
-    start, end = resolve_date_range("1Y")
-    live = enrich(fetch_ohlcv("AAPL", start, end))
+    from src.data import DataQualityError, fetch_ohlcv
+
+    end = dt.date.today() + dt.timedelta(days=1)  # yfinance excludes ``end``
+    live = enrich(fetch_ohlcv("AAPL", end - dt.timedelta(days=366), end))
     check("enrich works on a real fetched frame",
           len(live) > 200 and all(c in live.columns for c in expected_cols))
     check("every indicator column on real data is numeric",

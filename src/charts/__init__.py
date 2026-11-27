@@ -1,8 +1,8 @@
-"""Every chart in the dashboard, as pure ``(data, options) -> Figure`` functions.
+"""The eight Plotly charts from the spec, as ``(data, options) -> Figure`` functions.
 
-The PDF generator and the notebook call the same functions and get the same
-figure, so a chart cannot look one way in the report and another in the
-walkthrough. The Power BI report draws its own visuals.
+The PDF reports and the walkthroughs call the same functions and get the same
+figure, so a chart cannot look one way in a report and another in the
+notebook. The Power BI report draws its own visuals.
 
 Each function takes already-computed data -- a frame from
 :func:`src.indicators.enrich`, or a mapping of symbol to frame from
