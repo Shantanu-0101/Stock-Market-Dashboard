@@ -1,6 +1,6 @@
 """The only place in the project that talks to Yahoo Finance.
 
-Every network call lives behind one of the four public functions here, so if
+Every network call lives behind one of the public functions here, so if
 the endpoint changes shape this is the single module to fix. Nothing is
 cached: each script run fetches what it needs once.
 
@@ -17,65 +17,14 @@ from typing import Any, Iterable
 import pandas as pd
 import yfinance as yf
 
-from src import config
 from src.data.cleaner import DataQualityError, clean_ohlcv
 
 __all__ = [
     "fetch_ohlcv",
     "fetch_many",
     "fetch_company_info",
-    "resolve_date_range",
+    "normalise_ticker",
 ]
-
-
-# --------------------------------------------------------------------------
-# Date ranges
-# --------------------------------------------------------------------------
-
-def resolve_date_range(
-    preset: str = config.DEFAULT_PRESET,
-    custom_start: _dt.date | None = None,
-    custom_end: _dt.date | None = None,
-    today: _dt.date | None = None,
-) -> tuple[_dt.date, _dt.date]:
-    """Turn a preset or custom selection into a concrete ``(start, end)`` pair.
-
-    ``end`` is exclusive for yfinance, so one day is added to the last date
-    the user means to see — without it, "today" is silently missing from a
-    custom range.
-
-    Raises
-    ------
-    DataQualityError
-        For an unknown preset, a custom range missing its dates, or a range
-        that runs backwards.
-    """
-    today = today or _dt.date.today()
-
-    if preset not in config.DATE_PRESETS:
-        raise DataQualityError(
-            f"Unknown date range {preset!r}. "
-            f"Choose one of {', '.join(config.DATE_PRESETS)}."
-        )
-
-    lookback = config.DATE_PRESETS[preset]
-    if lookback is not None:
-        return today - _dt.timedelta(days=lookback), today + _dt.timedelta(days=1)
-
-    if custom_start is None or custom_end is None:
-        raise DataQualityError(
-            "A custom date range needs both a start and an end date."
-        )
-    if custom_start > custom_end:
-        raise DataQualityError(
-            "The start date is after the end date — swap them to continue."
-        )
-    if custom_start == custom_end:
-        raise DataQualityError(
-            "The start and end dates are the same, so there is nothing to plot. "
-            "Widen the range by at least one day."
-        )
-    return custom_start, custom_end + _dt.timedelta(days=1)
 
 
 # --------------------------------------------------------------------------
@@ -112,8 +61,8 @@ def fetch_ohlcv(ticker: str, start: _dt.date, end: _dt.date) -> pd.DataFrame:
         A Yahoo symbol: ``AAPL``, ``RELIANCE.NS``, ``BTC-USD``. Whitespace is
         stripped and the symbol upper-cased, since users type ``aapl``.
     start, end:
-        ``end`` is exclusive, matching yfinance. Use
-        :func:`resolve_date_range` to build the pair.
+        ``end`` is exclusive, matching yfinance, so pass the day after the
+        last date wanted.
 
     Returns
     -------
@@ -139,7 +88,7 @@ def fetch_many(
     start: _dt.date,
     end: _dt.date,
 ) -> tuple[dict[str, pd.DataFrame], dict[str, str]]:
-    """Fetch several tickers for the comparison and correlation tabs.
+    """Fetch several tickers, for the export and the comparison charts.
 
     Each symbol is fetched through :func:`fetch_ohlcv` rather than in one
     batched download, so one failure is reported against its own symbol.
@@ -149,8 +98,8 @@ def fetch_many(
     (frames, errors)
         ``frames`` maps symbol to a cleaned frame for everything that loaded;
         ``errors`` maps symbol to a user-readable reason for everything that
-        did not. Callers show the errors and chart the frames — a single bad
-        symbol in a five-way comparison must not blank the whole tab.
+        did not. Callers report the errors and use the frames — a single bad
+        symbol must not stop the others from loading.
     """
     frames: dict[str, pd.DataFrame] = {}
     errors: dict[str, str] = {}
@@ -232,7 +181,7 @@ def fetch_company_info(ticker: str) -> dict[str, Any]:
     is swallowed.
 
     Every value may be ``None``. This function never raises for a bad ticker —
-    a missing KPI card is not a reason to fail a page that still has prices.
+    a missing KPI card is not a reason to drop a ticker that still has prices.
     """
     symbol = normalise_ticker(ticker)
     info = _empty_info(symbol)

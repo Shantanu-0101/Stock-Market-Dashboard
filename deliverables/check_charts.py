@@ -255,7 +255,7 @@ def check_rsi(enriched: pd.DataFrame, out: Path) -> None:
     check("two zones and three reference lines", len(shapes) == 5, f"got {len(shapes)}")
     write(fig, out, "06_rsi")
 
-    # A short range in the app is a short *fetch*, so enrich runs on the few
+    # A short range is a short *fetch*, so enrich runs on the few
     # rows and the RSI column is entirely NaN. Slicing after enrich would
     # leave real values behind and test nothing.
     short = rsi_chart(enrich(synthetic_ohlcv(rows=5)), ticker="SYNTH")

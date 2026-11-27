@@ -1,7 +1,7 @@
-"""Tab 5: the monthly-returns grid, and the daily-returns distribution.
+"""The monthly-returns grid, and the daily-returns distribution.
 
 The histogram lives here rather than in a ninth module because the spec puts
-both on the Returns Analysis tab and both answer the same question -- how this
+both on the Returns Analysis page and both answer the same question -- how this
 stock's returns are distributed -- one by calendar month, one by magnitude.
 """
 

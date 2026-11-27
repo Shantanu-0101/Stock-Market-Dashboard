@@ -1,4 +1,4 @@
-"""Tab 2 (lower panel) and the standalone volume view."""
+"""Volume bars coloured by the day's direction, with their moving average."""
 
 from __future__ import annotations
 

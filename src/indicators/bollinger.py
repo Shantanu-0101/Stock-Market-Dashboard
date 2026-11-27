@@ -56,7 +56,7 @@ def percent_b(
 
     Values outside 0-1 mean price has broken out of the envelope. Carried as a
     column in the enriched frame because it answers "is this stock stretched?"
-    in one number, which the PDF commentary and the data table both want.
+    in one number.
 
     A zero-width band (a perfectly flat window) would divide by zero; those
     rows come back as ``NaN`` rather than infinity.
@@ -74,9 +74,9 @@ def bandwidth(
     """Band width as a fraction of the middle band — a volatility reading.
 
     Rising bandwidth is an expanding, nervous market; a multi-month low is the
-    "squeeze" that often precedes a sharp move. Kept here so the volatility
-    sentence in the PDF commentary has something scale-free to quote, since
-    the raw band width in rupees and in dollars cannot be compared.
+    "squeeze" that often precedes a sharp move. It is scale-free, so two
+    tickers can be compared, where the raw band width in rupees and in
+    dollars cannot.
     """
     upper, middle, lower = bollinger_bands(series, window, num_std)
     return (upper - lower) / middle.where(middle != 0)

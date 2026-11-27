@@ -12,7 +12,6 @@ from src.data.fetcher import (
     fetch_many,
     fetch_ohlcv,
     normalise_ticker,
-    resolve_date_range,
 )
 
 __all__ = [
@@ -23,5 +22,4 @@ __all__ = [
     "fetch_many",
     "fetch_ohlcv",
     "normalise_ticker",
-    "resolve_date_range",
 ]

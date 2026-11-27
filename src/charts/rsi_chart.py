@@ -1,4 +1,4 @@
-"""Tab 3 (upper panel): RSI with the overbought and oversold zones."""
+"""RSI with the overbought and oversold zones."""
 
 from __future__ import annotations
 

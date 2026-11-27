@@ -284,3 +284,23 @@ GitHub cannot show Plotly charts and left them blank.
 heading kept with its image, no dates in the text. Notebook rebuilt and run top
 to bottom: 16 code cells, no errors, 9 charts with images. The three check
 scripts pass. The Power BI project files were not changed.
+
+## 27 Nov 2026, 20:44 — Phase 9: README and final pass
+
+- **`README.md`** — what the project does, a screenshot of the first Power BI
+  page, install and run steps, project structure, indicator table, sample
+  tickers and known limits.
+- **Read-through of every module.** Removed code left from the Streamlit app
+  that nothing used any more: `resolve_date_range()` and the date presets,
+  the comparison ticker limits, `APP_ICON` and `format_number()`. The live
+  check in `check_indicators.py` now builds its one-year range itself.
+  Docstrings that still spoke of tabs, a selectbox, a data table or "the app"
+  now describe the Power BI report, the PDFs and the walkthroughs.
+  `normalise_ticker` added to the fetcher's `__all__`, since other modules
+  import it.
+
+**Check:** all 26 modules import; `check_indicators.py` 82 passed (live data
+included), `check_charts.py` all passed, `check_export.py` 36 passed;
+`build_notebook.py --check` reports the notebook matches the script. The
+export was not re-run, so `powerbi/data/` and the report are unchanged. The
+README was not viewed on GitHub.

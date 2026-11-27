@@ -1,12 +1,10 @@
 """One layout template, applied by every chart in this package.
 
 The eight chart modules are independent functions, but they have to look like
-one product in the dashboard, in the notebook and in the PDF. Everything
-shared — fonts, margins, hover behaviour, grid colour, the empty-state figure
-and the "window too long for this range" caption — lives here, so changing the
-look of the dashboard is a one-file edit rather than eight.
-
-The PDF generator and the notebook call these same functions.
+one product in the notebook and in the PDF. Everything shared — fonts,
+margins, hover behaviour, grid colour, the empty-state figure and the "window
+too long for this range" caption — lives here, so changing the look of the
+charts is a one-file edit rather than eight.
 """
 
 from __future__ import annotations
