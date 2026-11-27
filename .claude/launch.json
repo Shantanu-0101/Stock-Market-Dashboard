@@ -9,7 +9,7 @@
         "http.server",
         "8765",
         "--directory",
-        "deliverables/chart_preview"
+        "tests/chart_preview"
       ],
       "port": 8765
     },

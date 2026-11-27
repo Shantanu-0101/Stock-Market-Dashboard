@@ -1,7 +1,7 @@
 """Single source of truth for project defaults, indicator windows and colours.
 
 Nothing in here imports pandas or plotly, so every other module
-(and the walkthroughs, and the report generator) can read these constants cheaply.
+(and the walkthroughs, and the checks) can read these constants cheaply.
 """
 
 from __future__ import annotations

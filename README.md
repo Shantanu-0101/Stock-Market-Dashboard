@@ -80,35 +80,29 @@ what happens at each step. The figures and a one-page `dashboard.html` go to
 
 The notebook [deliverables/walkthrough.ipynb](deliverables/walkthrough.ipynb)
 holds the same steps with their output saved, so it can be read on GitHub
-without running anything. It is generated from the script. After editing the
-script, rebuild it:
+without running anything. Nothing rebuilds one from the other, so a change to
+the script needs the same change in the notebook.
+
+The project report,
+[deliverables/Project_Report.pdf](deliverables/Project_Report.pdf), covers the
+business case, the architecture, the flowchart and the results, with the
+Power BI screenshots from `deliverables/screenshots/`.
+
+**4. The checks.** Three scripts in `tests/` check the indicator maths against
+the spec, the charts and the export. Each prints `ok` or `FAILED` for every
+check and exits with an error if any fail. The parts that need live data are
+skipped when offline.
 
 ```powershell
-.venv\Scripts\python.exe deliverables\build_notebook.py
-```
-
-**4. The project report** (optional). It reads `powerbi/data/` and the
-screenshots, so run the export first. It needs no internet.
-
-```powershell
-.venv\Scripts\python.exe deliverables\generate_report.py
-```
-
-**5. The checks.** Three scripts check the indicator maths against the spec,
-the charts and the export. Each prints `ok` or `FAILED` for every check and
-exits with an error if any fail. The parts that need live data are skipped
-when offline.
-
-```powershell
-.venv\Scripts\python.exe deliverables\check_indicators.py
+.venv\Scripts\python.exe tests\check_indicators.py
 ```
 
 ```powershell
-.venv\Scripts\python.exe deliverables\check_charts.py
+.venv\Scripts\python.exe tests\check_charts.py
 ```
 
 ```powershell
-.venv\Scripts\python.exe deliverables\check_export.py
+.venv\Scripts\python.exe tests\check_export.py
 ```
 
 ## Project structure
@@ -143,11 +137,12 @@ Stock-Market-Dashboard/
 ├── deliverables/
 │   ├── walkthrough.py                 # the whole flow as a script
 │   ├── walkthrough.ipynb              # the same, as a notebook
-│   ├── build_notebook.py              # builds the notebook from the script
-│   ├── generate_report.py             # builds Project_Report.pdf
 │   ├── Project_Report.pdf             # the project report
-│   ├── screenshots/                   # Power BI pages used in the report
-│   └── check_*.py                     # checks for indicators, charts, export
+│   └── screenshots/                   # Power BI pages used in the report
+├── tests/
+│   ├── check_indicators.py            # indicator maths against the spec
+│   ├── check_charts.py                # the eight Plotly charts
+│   └── check_export.py                # KPI cards, commentary and the PDF
 ├── reports/                           # PDF summaries from the export (not in git)
 ├── docs/journal/                      # build and error logs
 ├── SPEC.md                            # what the project had to do

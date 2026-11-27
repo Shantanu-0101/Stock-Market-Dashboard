@@ -17,9 +17,8 @@ desktop.ini
 .idea/
 
 # Generated artefacts (the committed Project_Report.pdf is kept, see below)
-deliverables/chart_preview/
+tests/chart_preview/
 deliverables/walkthrough_output/
-deliverables/*_export.csv
 scratch/
 
 # Written by src/export/powerbi_data.py
