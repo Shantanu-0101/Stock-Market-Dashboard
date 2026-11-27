@@ -135,3 +135,10 @@ The first run of the walkthrough put the high/low inversion on a row that was
 then dropped as a duplicate date, and the missing prices on an all-empty row, so
 neither the swap nor the forward fill appeared in the printed result. Moved the
 faults to rows that survive; the output now shows both.
+
+## 27 Nov 2026, 18:55 — screenshots picked up the Claude window and a tooltip
+
+A plain screen grab captured the Claude window lying over Power BI, and pressing
+Alt to bring Power BI forward showed the ribbon key tips. Capturing the Power BI
+window directly (`PrintWindow`) fixed both. One page also caught a tab tooltip
+and was taken again with the mouse moved away.
