@@ -12,6 +12,18 @@
         "deliverables/chart_preview"
       ],
       "port": 8765
+    },
+    {
+      "name": "walkthrough-preview",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8766",
+        "--directory",
+        "deliverables/walkthrough_output"
+      ],
+      "port": 8766
     }
   ]
 }
