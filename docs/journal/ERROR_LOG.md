@@ -128,3 +128,10 @@ then matched pandas.
 - The summary text was cut off; its table is taller.
 - A new check used a 400-row frame, too short for SMA 200 to be filled across a
   one-year window; it now uses 600 rows.
+
+## 27 Nov 2026, 18:20 — the cleaning example did not show what it described
+
+The first run of the walkthrough put the high/low inversion on a row that was
+then dropped as a duplicate date, and the missing prices on an all-empty row, so
+neither the swap nor the forward fill appeared in the printed result. Moved the
+faults to rows that survive; the output now shows both.

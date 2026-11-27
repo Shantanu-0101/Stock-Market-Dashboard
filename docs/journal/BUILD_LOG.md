@@ -240,3 +240,22 @@ and volatility matched Python for all five tickers; pairwise correlations
 matched to six decimals; RSI (both formulas) and SMA 20 matched the CSV.
 `check_export.py` 36, `check_indicators.py` 82 and `check_charts.py` passing.
 Slicer clicks other than page changes were not exercised by hand.
+
+## 27 Nov 2026, 18:20 — Phase 7: walkthrough script and notebook
+
+- **`deliverables/walkthrough.py`** — fetch, clean, enrich, every chart, then
+  one `dashboard.html` with the KPI cards and all figures. It calls the
+  functions in `src/` and prints output at each stage. Figures go to
+  `deliverables/walkthrough_output/` (gitignored).
+- **`deliverables/walkthrough.ipynb`** — generated from the script by
+  `build_notebook.py`, committed with its outputs. `--check` reports drift.
+- **`requirements.txt`** — added `ipykernel`, `nbclient`, `nbformat`.
+
+Judgment calls: the narration lives in the script as `# %% [markdown]` cells,
+so there is one file to edit; the cleaning step uses a small made-up frame,
+labelled as such, because live data rarely shows the faults.
+
+**Check:** the script ran against live Yahoo data (exit 0); the notebook ran top
+to bottom, 16 code cells, no errors, 9 figures; `dashboard.html` viewed in the
+browser with no console errors. `check_indicators.py`, `check_charts.py` and
+`check_export.py` pass. The notebook was not opened in a Jupyter interface.
