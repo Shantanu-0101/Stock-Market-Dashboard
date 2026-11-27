@@ -1,0 +1,13 @@
+relationship prices_calendar
+	fromColumn: Prices.Date
+	toColumn: Calendar.Date
+
+relationship prices_tickers
+	fromColumn: Prices.Ticker
+	toColumn: Tickers.Ticker
+
+relationship range_calendar
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'Date Range'.Date
+	toColumn: Calendar.Date
+

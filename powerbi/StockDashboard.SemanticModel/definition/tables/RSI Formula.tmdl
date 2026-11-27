@@ -1,0 +1,13 @@
+table 'RSI Formula'
+	lineageTag: a15f6f20-73eb-43d0-b9ba-cbfcda65151a
+
+	column Formula
+		dataType: string
+		lineageTag: e4faec63-7bc2-4440-8dff-3f587798f8e5
+		summarizeBy: none
+		sourceColumn: [Formula]
+
+	partition 'RSI Formula' = calculated
+		mode: import
+		source = DATATABLE("Formula", STRING, {{"Spec (rolling mean)"}, {"Wilder (standard)"}})
+

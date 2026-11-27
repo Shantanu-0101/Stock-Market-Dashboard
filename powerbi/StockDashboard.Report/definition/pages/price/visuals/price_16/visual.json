@@ -1,0 +1,67 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "price_16",
+  "position": {
+    "x": 8,
+    "y": 622,
+    "z": 1600,
+    "width": 1264,
+    "height": 94,
+    "tabOrder": 1600
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Prices"
+                    }
+                  },
+                  "Property": "Indicator Summary"
+                }
+              },
+              "queryRef": "Prices.Indicator Summary",
+              "nativeQueryRef": "Indicator Summary",
+              "displayName": "Last-year indicator summary (spec RSI). Not investment advice."
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

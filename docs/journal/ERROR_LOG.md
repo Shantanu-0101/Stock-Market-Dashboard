@@ -106,3 +106,25 @@ passes were on wider windows with smaller prices.
 **Fix.** In `theme.py` the title is pinned to the top of the figure, a single
 legend row gets a 78px top margin, and the y-axis uses `automargin` with a
 title standoff. Re-checked in the PDF and the app.
+
+## 27 Nov 2026, 09:23 — correlation measure failed, then showed only the diagonal
+
+**What happened.** The matrix showed "Something's wrong with one or more
+fields": `VarX` and `VarY` are not usable as DAX variable names. With them
+renamed, only the 1.00 diagonal appeared.
+
+**Why.** Looking up the second ticker's return inside `ADDCOLUMNS` carried the
+first ticker's return in as a filter (context transition), so only identical
+returns matched.
+
+**Fix.** Renamed the variables and added `ALL(Prices)` to the lookup. Values
+then matched pandas.
+
+## 27 Nov 2026, 09:24 — smaller faults seen on the first load
+
+- MACD histogram and lines used different y-axes; the secondary axis is off.
+- Rupee prices printed as "Rs1,396.20": the engine trims trailing spaces, so
+  the measure adds the space.
+- The summary text was cut off; its table is taller.
+- A new check used a 400-row frame, too short for SMA 200 to be filled across a
+  one-year window; it now uses 600 rows.

@@ -1,13 +1,13 @@
 # Stock Market Dashboard — Project Spec
 
-A real-time stock market analytics dashboard that fetches live market data, computes technical indicators, and presents interactive visualizations. Users pick stocks, compare performance, and explore trends through a Streamlit web app.
+A real-time stock market analytics dashboard that fetches live market data, computes technical indicators, and presents interactive visualizations. Python fetches and calculates; users pick stocks, compare performance and explore trends in a Power BI report.
 
 ---
 
 ## Workflow
 
 ```
-User selects stock ticker(s) + date range
+Configured ticker list + 5 years of history
               │
               ▼
    ┌─────────────────────┐
@@ -31,7 +31,14 @@ User selects stock ticker(s) + date range
               │
               ▼
    ┌─────────────────────┐
-   │  Visualize           │
+   │  Export CSV          │
+   │  prices, tickers,    │
+   │  summary tables      │
+   └──────────┬──────────┘
+              │
+              ▼
+   ┌─────────────────────┐
+   │  Visualize (Power BI)│
    │  - Candlestick chart │
    │  - Price + overlays  │
    │  - Volume bars       │
@@ -59,9 +66,9 @@ User selects stock ticker(s) + date range
 | Data fetching      | yfinance (free, no API key needed)  |
 | Data processing    | pandas, numpy                       |
 | Technical indicators | pandas + ta-lib (or manual calc)  |
-| Visualization      | Plotly (interactive charts)         |
-| UI                 | Streamlit                           |
-| Export             | fpdf2 (PDF report), CSV download    |
+| Dashboard          | Power BI Desktop (PBIP project)     |
+| Static charts      | Plotly (PDF report and notebook)    |
+| Export             | fpdf2 + kaleido (PDF), CSV files    |
 
 **Zero API keys required.** yfinance pulls from Yahoo Finance for free.
 
@@ -71,11 +78,15 @@ User selects stock ticker(s) + date range
 
 ```
 stock-market-dashboard/
-├── app.py                              # Streamlit web application
+├── powerbi/
+│   ├── StockDashboard.pbip             # Power BI project (open this)
+│   ├── StockDashboard.SemanticModel/   # Tables, relationships, DAX measures
+│   ├── StockDashboard.Report/          # Report pages and visuals
+│   └── data/                           # CSV files written by the export script
 ├── src/
-│   ├── config.py                       # App settings, defaults, ticker lists
+│   ├── config.py                       # Settings, defaults, ticker lists
 │   ├── data/
-│   │   ├── fetcher.py                  # yfinance data fetching + caching
+│   │   ├── fetcher.py                  # yfinance data fetching
 │   │   └── cleaner.py                  # Null handling, type casting, validation
 │   ├── indicators/
 │   │   ├── moving_averages.py          # SMA, EMA calculations
@@ -94,6 +105,7 @@ stock-market-dashboard/
 │   │   └── correlation.py             # Correlation matrix across stocks
 │   └── export/
 │       └── pdf_report.py              # Generate PDF summary report
+│       └── powerbi_data.py            # Write the CSV tables Power BI imports
 ├── deliverables/
 │   ├── walkthrough.ipynb               # Jupyter notebook walkthrough
 │   ├── walkthrough.py                  # Script version
@@ -111,8 +123,8 @@ stock-market-dashboard/
 ### 1. Stock Data Fetcher
 - Fetch OHLCV (Open, High, Low, Close, Volume) data via yfinance
 - Support any ticker: US stocks (AAPL, TSLA), Indian (RELIANCE.NS, TCS.NS), crypto (BTC-USD)
-- Date range selector: 1W, 1M, 3M, 6M, 1Y, 5Y, custom
-- Cache fetched data in session state to avoid re-fetching on every interaction
+- Date range selector in the report: 1W, 1M, 3M, 6M, 1Y, 5Y, custom
+- The export script fetches 5 years for every configured ticker; Refresh in Power BI loads it
 - Fetch company info: name, sector, market cap, P/E ratio, 52-week high/low
 
 ### 2. Technical Indicators (computed with pandas)
@@ -129,11 +141,11 @@ All indicators are calculated from scratch using pandas/numpy — no black-box l
 | **Cumulative Returns** | (1 + daily_return).cumprod() - 1 | Total return over period |
 | **Volatility** | Std of daily returns * sqrt(252) | Annualized risk |
 
-### 3. Interactive Charts (Plotly)
+### 3. Interactive Charts (Power BI)
 
 | Chart | Description |
 |-------|-------------|
-| **Candlestick** | OHLC candles with volume subplot |
+| **Candlestick** | Daily open, high, low and close with a volume chart (a true candlestick needs a Power BI custom visual) |
 | **Price + Overlays** | Close price with SMA/EMA/Bollinger toggles |
 | **Volume** | Bar chart with 20-day average line |
 | **RSI** | Line chart with 70/30 reference bands |
@@ -151,52 +163,22 @@ All indicators are calculated from scratch using pandas/numpy — no black-box l
 - YTD Return %
 
 ### 5. Export
-- **CSV download** — cleaned data with all indicators as columns
-- **PDF report** — 1-page summary: KPIs + price chart + RSI + recommendation text
+- **CSV files** — cleaned data with all indicators as columns, written by `python -m src.export.powerbi_data`
+- **PDF report** — 1-page summary: KPIs + price chart + RSI + mechanical indicator summary, written by the same script
 
 ---
 
-## Streamlit UI Layout
+## Power BI Report Layout
 
-```
-┌──────────────────────────────────────────────────────────┐
-│  Stock Market Dashboard                                   │
-├───────────────┬──────────────────────────────────────────┤
-│  Sidebar      │  Main Area                               │
-│               │                                          │
-│  Ticker input │  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐       │
-│  [AAPL]       │  │Price│ │52W H│ │ P/E │ │ YTD │       │
-│               │  │+1.2%│ │$198 │ │28.5 │ │+24% │       │
-│  Date range   │  └─────┘ └─────┘ └─────┘ └─────┘       │
-│  [1Y ▼]       │                                          │
-│               │  Tab 1: Price & Overlays                 │
-│  Indicators   │  ┌──────────────────────────────────┐   │
-│  ☑ SMA 20     │  │  [Interactive Plotly chart]       │   │
-│  ☑ SMA 50     │  │  Price + SMA + Bollinger          │   │
-│  ☐ SMA 200    │  └──────────────────────────────────┘   │
-│  ☑ Bollinger  │                                          │
-│  ☑ EMA        │  Tab 2: Candlestick + Volume             │
-│               │  Tab 3: RSI + MACD                       │
-│  Compare      │  Tab 4: Compare Stocks                   │
-│  [+ Add stock]│  Tab 5: Returns Analysis                 │
-│               │                                          │
-│  Export       │  ┌──────────────────────────────────┐   │
-│  [CSV] [PDF]  │  │  Data table (expandable)         │   │
-│               │  └──────────────────────────────────┘   │
-└───────────────┴──────────────────────────────────────────┘
-```
+Every page carries a ticker slicer and a date-range slicer.
 
-### Tab breakdown:
-
-**Tab 1 — Price & Overlays:** Close price line chart. Toggle SMA(20/50/200), EMA(12/26), Bollinger Bands on/off from sidebar checkboxes. All overlaid on the same chart.
-
-**Tab 2 — Candlestick + Volume:** Classic OHLC candlestick chart (green/red candles). Volume bars below as a subplot with 20-day average volume line.
-
-**Tab 3 — RSI + MACD:** Two subplots stacked vertically. RSI with horizontal lines at 70 (overbought) and 30 (oversold). MACD with signal line and histogram.
-
-**Tab 4 — Compare Stocks:** Add 2-5 tickers from sidebar. All normalized to base 100 at the start date. One line per stock, different colors.
-
-**Tab 5 — Returns Analysis:** Monthly returns heatmap (rows = years, columns = months, color = return %). Correlation matrix if multiple stocks selected. Daily returns distribution histogram.
+| Page | Contents |
+|------|----------|
+| **Price & Overlays** | KPI cards, close price line with SMA(20/50/200), EMA(12/26) and Bollinger Bands, switched by an overlay slicer |
+| **Candlestick & Volume** | Daily open, high, low, close; volume bars with the 20-day average |
+| **RSI & MACD** | RSI with lines at 70 and 30; MACD with signal line and histogram |
+| **Compare Stocks** | Selected tickers normalised to base 100 at the first common date |
+| **Returns Analysis** | Monthly returns matrix, correlation matrix of daily returns, daily returns histogram |
 
 ---
 
@@ -274,7 +256,7 @@ def cumulative_returns(series: pd.Series) -> pd.Series:
 
 1. **Jupyter Notebook** (`walkthrough.ipynb`) — Step-by-step: fetch data → compute indicators → build each chart → combine into dashboard
 2. **Python Script** (`walkthrough.py`) — Same flow as a runnable script
-3. **Streamlit App** (`app.py`) — Full interactive dashboard
+3. **Power BI Report** (`powerbi/StockDashboard.pbip`) — Full interactive dashboard
 4. **Project Report** (`Project_Report.pdf`) — Business understanding, architecture, flowchart, screenshots, final outcome
 
 ---
@@ -282,19 +264,22 @@ def cumulative_returns(series: pd.Series) -> pd.Series:
 ## Dependencies
 
 ```
-streamlit
 yfinance
 pandas
 numpy
 plotly
 fpdf2
+kaleido
 ```
+
+Power BI Desktop (Windows, free) is also required.
 
 No API keys. Install and run:
 ```bash
 pip install -r requirements.txt
-streamlit run app.py
+python -m src.export.powerbi_data
 ```
+Then open `powerbi/StockDashboard.pbip` and click **Refresh**.
 
 ---
 
@@ -303,7 +288,7 @@ streamlit run app.py
 1. **Real data** — not a static CSV, actual live market data refreshed on every run
 2. **Data transformation** — raw OHLCV → 8+ derived columns (indicators), all computed with pandas
 3. **Multiple chart types** — candlestick, line, bar, heatmap, correlation matrix, histogram
-4. **Interactive** — Plotly charts with hover, zoom, pan; Streamlit widgets for filtering
+4. **Interactive** — Power BI visuals with hover and cross-filtering; slicers for ticker and date range
 5. **Multi-stock comparison** — not just one stock, normalized comparison across tickers
 6. **Export** — CSV for further analysis, PDF for reporting
 7. **No API key barrier** — anyone can clone and run immediately
