@@ -8,3 +8,6 @@ numpy==2.5.5           # numeric helpers
 plotly==7.2.0          # interactive charts
 fpdf2==2.9.0           # PDF report
 kaleido==1.5.2         # static image export for the charts inside the PDF
+ipykernel==7.4.0       # runs deliverables/walkthrough.ipynb
+nbclient==0.11.0       # executes the notebook from build_notebook.py
+nbformat==5.11.1       # writes the notebook; inline Plotly charts need it
