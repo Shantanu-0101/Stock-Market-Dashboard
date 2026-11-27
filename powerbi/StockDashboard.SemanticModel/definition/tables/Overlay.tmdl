@@ -1,0 +1,22 @@
+table Overlay
+	lineageTag: 9fb67c0b-d2a6-4b78-ae0c-c22941bb14c9
+
+	column Overlay
+		dataType: string
+		lineageTag: 2a986b9a-8ba6-41af-aff7-2194138e57ee
+		summarizeBy: none
+		sourceColumn: [Overlay]
+		sortByColumn: 'Overlay Order'
+
+	column 'Overlay Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b9fbd117-8ea6-4901-9f11-9ce69c590746
+		summarizeBy: none
+		sourceColumn: [Overlay Order]
+
+	partition Overlay = calculated
+		mode: import
+		source = DATATABLE("Overlay", STRING, "Overlay Order", INTEGER, {{"SMA 20", 1}, {"SMA 50", 2}, {"SMA 200", 3}, {"EMA 12", 4}, {"EMA 26", 5}, {"Bollinger Bands", 6}})
+

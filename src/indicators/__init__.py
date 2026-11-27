@@ -56,7 +56,7 @@ __all__ = [
     "ytd_return",
 ]
 
-#: Sidebar label -> function, for decision 0.3 of the implementation plan.
+#: Display name -> function, for decision 0.3 of the implementation plan.
 #: The spec's version is first so it is the default in a selectbox.
 RSI_VARIANTS = {
     "Spec (rolling mean)": rsi,
@@ -161,7 +161,7 @@ def enrich(
     ----------
     rsi_variant:
         A key of :data:`RSI_VARIANTS`. Unknown keys raise rather than
-        silently falling back, so a typo in the sidebar wiring is loud.
+        silently falling back, so a typo in the caller is loud.
     periods_per_year:
         Annualisation divisor for the volatility column; see
         :func:`periods_per_year_for`.

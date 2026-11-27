@@ -1,6 +1,6 @@
-"""Single source of truth for app defaults, windows, presets and colours.
+"""Single source of truth for project defaults, windows, presets and colours.
 
-Nothing in here imports streamlit, pandas or plotly, so every other module
+Nothing in here imports pandas or plotly, so every other module
 (and the notebook, and the PDF generator) can read these constants cheaply.
 """
 
@@ -68,16 +68,17 @@ VOLUME_AVG_WINDOW: int = 20
 TRADING_DAYS_PER_YEAR: int = 252
 
 # --------------------------------------------------------------------------
-# Caching
+# Power BI data export
 # --------------------------------------------------------------------------
 
-#: Price history: 15 minutes keeps "live market data" honest without
-#: re-fetching on every widget interaction.
-PRICE_CACHE_TTL: int = 900
+#: Calendar days of history written for every ticker: the longest preset.
+HISTORY_DAYS: int = 365 * 5
 
-#: Company metadata (sector, market cap, P/E) moves slowly and the endpoint
-#: is flaky, so it is held much longer.
-INFO_CACHE_TTL: int = 60 * 60 * 6
+#: Calendar days the PDF report and the written summary describe.
+SUMMARY_DAYS: int = 365
+
+#: Width of one bar in the daily-returns histogram, in percentage points.
+RETURN_BIN_PERCENT: float = 0.5
 
 # --------------------------------------------------------------------------
 # Chart colours and theme
@@ -116,14 +117,14 @@ CHART_HEIGHT: int = 520
 CHART_HEIGHT_SHORT: int = 300
 
 # --------------------------------------------------------------------------
-# App chrome
+# Titles and wording
 # --------------------------------------------------------------------------
 
 APP_TITLE: str = "Stock Market Dashboard"
 APP_ICON: str = "📈"
 MISSING_VALUE_DISPLAY: str = "—"
 
-#: Shown wherever the rules-based commentary appears (PDF, app footer).
+#: Shown wherever the rules-based commentary appears (PDF, Power BI report).
 DISCLAIMER: str = (
     "This dashboard is a mechanical summary of technical indicators computed "
     "from public market data. It is not investment advice."

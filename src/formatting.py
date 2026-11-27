@@ -1,9 +1,8 @@
 """Turning nullable numbers into the strings a KPI card shows.
 
-Presentation only -- no maths, no fetching. It lives outside ``app.py``
-because the PDF report has to print the same KPI row with the same rounding
-and the same em dash for a missing value; two implementations would drift the
-first time one of them was tweaked.
+Presentation only -- no maths, no fetching. The PDF report and the Power BI
+data export both use it, so a figure is rounded the same way, with the same em
+dash for a missing value, wherever it is printed.
 
 Every function accepts ``None`` and returns :data:`src.config.MISSING_VALUE_DISPLAY`
 for it, so a caller never has to guard a field that Yahoo did not supply.
