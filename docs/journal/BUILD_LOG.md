@@ -259,3 +259,28 @@ labelled as such, because live data rarely shows the faults.
 to bottom, 16 code cells, no errors, 9 figures; `dashboard.html` viewed in the
 browser with no console errors. `check_indicators.py`, `check_charts.py` and
 `check_export.py` pass. The notebook was not opened in a Jupyter interface.
+
+## 27 Nov 2026, 18:55 — Phase 8: project report
+
+- **`deliverables/generate_report.py`** writes `Project_Report.pdf` (10 pages,
+  A4): title page (created by Dr. Satyajit Pattnaik), contents, business
+  understanding, project understanding, architecture diagram, flowchart and
+  final outcome (screenshots, sample outputs, results worked out from
+  `powerbi/data/`). No dates appear in the report. No network needed.
+- **`deliverables/screenshots/`** holds the five pages, captured from Power BI
+  Desktop with AAPL, 1Y and the default slicers. Now tracked in git, since the
+  report cannot be rebuilt without them.
+
+Judgment call: the outcome table measures each ticker's year to its own last
+trading day, as the PDF summaries do. Power BI's 1Y counts back from the newest
+date across all tickers, so AAPL shows +28.83% in the table and +27.96% in the
+screenshot. The report says so under the table.
+
+Also in this phase: both walkthroughs commented throughout, and the notebook
+now stores a still image of each chart beside the interactive one, because
+GitHub cannot show Plotly charts and left them blank.
+
+**Check:** generated, then every page rendered and read: no cut-off text, each
+heading kept with its image, no dates in the text. Notebook rebuilt and run top
+to bottom: 16 code cells, no errors, 9 charts with images. The three check
+scripts pass. The Power BI project files were not changed.

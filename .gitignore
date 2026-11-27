@@ -17,7 +17,6 @@ desktop.ini
 .idea/
 
 # Generated artefacts (the committed Project_Report.pdf is kept, see below)
-deliverables/screenshots/
 deliverables/chart_preview/
 deliverables/walkthrough_output/
 deliverables/*_export.csv
