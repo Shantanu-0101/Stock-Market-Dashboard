@@ -1,10 +1,8 @@
 """The only place in the project that talks to Yahoo Finance.
 
 Every network call lives behind one of the four public functions here, so if
-the endpoint changes shape this is the single module to fix. Results are
-cached with :func:`streamlit.cache_data` where a Streamlit runtime exists and
-fall through to an ordinary call otherwise, which keeps the notebook and the
-plain scripts working unchanged.
+the endpoint changes shape this is the single module to fix. Nothing is
+cached: each script run fetches what it needs once.
 
 Prices come back **auto-adjusted** (splits and dividends applied), because
 every indicator in the spec is computed on a single continuous price series
@@ -14,7 +12,7 @@ and an unadjusted series puts a false gap at each split.
 from __future__ import annotations
 
 import datetime as _dt
-from typing import Any, Callable, Iterable
+from typing import Any, Iterable
 
 import pandas as pd
 import yfinance as yf
@@ -31,24 +29,6 @@ __all__ = [
 
 
 # --------------------------------------------------------------------------
-# Caching that degrades to a no-op outside Streamlit
-# --------------------------------------------------------------------------
-
-def _cache(ttl: int, show_spinner: bool | str = False) -> Callable[[Callable], Callable]:
-    """Return ``st.cache_data(ttl=...)`` if streamlit is importable, else a no-op.
-
-    Importing streamlit is cheap and it is already a hard dependency, but the
-    decorator is kept optional so that a stripped environment (or a future
-    CLI use of this module) does not need the UI library at all.
-    """
-    try:
-        import streamlit as st
-    except ModuleNotFoundError:  # pragma: no cover - streamlit is a dependency
-        return lambda func: func
-    return st.cache_data(ttl=ttl, show_spinner=show_spinner)
-
-
-# --------------------------------------------------------------------------
 # Date ranges
 # --------------------------------------------------------------------------
 
@@ -58,7 +38,7 @@ def resolve_date_range(
     custom_end: _dt.date | None = None,
     today: _dt.date | None = None,
 ) -> tuple[_dt.date, _dt.date]:
-    """Turn a sidebar selection into a concrete ``(start, end)`` pair.
+    """Turn a preset or custom selection into a concrete ``(start, end)`` pair.
 
     ``end`` is exclusive for yfinance, so one day is added to the last date
     the user means to see — without it, "today" is silently missing from a
@@ -123,7 +103,6 @@ def _download(ticker: str, start: _dt.date, end: _dt.date) -> pd.DataFrame | Non
         ) from exc
 
 
-@_cache(ttl=config.PRICE_CACHE_TTL)
 def fetch_ohlcv(ticker: str, start: _dt.date, end: _dt.date) -> pd.DataFrame:
     """Daily OHLCV for one ticker, cleaned and ready for the indicators.
 
@@ -163,8 +142,7 @@ def fetch_many(
     """Fetch several tickers for the comparison and correlation tabs.
 
     Each symbol is fetched through :func:`fetch_ohlcv` rather than in one
-    batched download, so every ticker gets its own cache entry: adding a sixth
-    ticker to the comparison re-fetches only that one.
+    batched download, so one failure is reported against its own symbol.
 
     Returns
     -------
@@ -244,7 +222,6 @@ def _as_number(value: Any) -> float | None:
     return number or None
 
 
-@_cache(ttl=config.INFO_CACHE_TTL)
 def fetch_company_info(ticker: str) -> dict[str, Any]:
     """Name, sector, market cap, P/E, 52-week range and currency for a ticker.
 

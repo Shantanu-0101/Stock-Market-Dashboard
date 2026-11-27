@@ -1,6 +1,6 @@
 """Data access layer: fetching from Yahoo Finance and cleaning what comes back.
 
-Import from here rather than from the submodules, so the rest of the app has
+Import from here rather than from the submodules, so the rest of the project has
 one name to reach for::
 
     from src.data import fetch_ohlcv, clean_ohlcv, DataQualityError

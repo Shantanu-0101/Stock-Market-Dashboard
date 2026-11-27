@@ -9,9 +9,6 @@ __pycache__/
 venv/
 env/
 
-# Streamlit
-.streamlit/secrets.toml
-
 # OS / editor
 Thumbs.db
 desktop.ini
@@ -24,6 +21,14 @@ deliverables/screenshots/
 deliverables/chart_preview/
 deliverables/*_export.csv
 scratch/
+
+# Written by src/export/powerbi_data.py
+powerbi/data/
+reports/
+
+# Power BI Desktop local files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
 
 # Keep the deliverable report tracked even though PDFs are usually noise
 !deliverables/Project_Report.pdf

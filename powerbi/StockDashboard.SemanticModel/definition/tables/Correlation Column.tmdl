@@ -1,0 +1,13 @@
+table 'Correlation Column'
+	lineageTag: c317c9b5-99c4-4d26-bff6-a75031df1f66
+
+	column 'Column Ticker'
+		dataType: string
+		lineageTag: b20ad06f-4c0a-4a4f-a66c-081e939fe1a9
+		summarizeBy: none
+		sourceColumn: [Column Ticker]
+
+	partition 'Correlation Column' = calculated
+		mode: import
+		source = SELECTCOLUMNS(Tickers, "Column Ticker", Tickers[Ticker])
+

@@ -1,0 +1,39 @@
+table 'Date Range'
+	lineageTag: 95ae318c-90cb-4255-aa05-f3c7a1f02176
+
+	column Preset
+		dataType: string
+		lineageTag: 4e7d0b56-a149-4f2b-93ec-336e88425356
+		summarizeBy: none
+		sourceColumn: [Preset]
+		sortByColumn: 'Preset Order'
+
+	column 'Preset Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 86b6d4fa-078c-44c2-bc6f-f51d6b3efc0c
+		summarizeBy: none
+		sourceColumn: [Preset Order]
+
+	column Date
+		dataType: dateTime
+		isHidden
+		formatString: dd MMM yyyy
+		lineageTag: 67daa0fd-7b9a-4450-8378-88e91a5d8741
+		summarizeBy: none
+		sourceColumn: [Date]
+
+	partition 'Date Range' = calculated
+		mode: import
+		source =
+				VAR LastDay = MAX('Calendar'[Date])
+				RETURN UNION(
+				    SELECTCOLUMNS(FILTER('Calendar', 'Calendar'[Date] >= LastDay - 7), "Preset", "1W", "Preset Order", 1, "Date", 'Calendar'[Date]),
+				    SELECTCOLUMNS(FILTER('Calendar', 'Calendar'[Date] >= LastDay - 30), "Preset", "1M", "Preset Order", 2, "Date", 'Calendar'[Date]),
+				    SELECTCOLUMNS(FILTER('Calendar', 'Calendar'[Date] >= LastDay - 91), "Preset", "3M", "Preset Order", 3, "Date", 'Calendar'[Date]),
+				    SELECTCOLUMNS(FILTER('Calendar', 'Calendar'[Date] >= LastDay - 182), "Preset", "6M", "Preset Order", 4, "Date", 'Calendar'[Date]),
+				    SELECTCOLUMNS(FILTER('Calendar', 'Calendar'[Date] >= LastDay - 365), "Preset", "1Y", "Preset Order", 5, "Date", 'Calendar'[Date]),
+				    SELECTCOLUMNS(FILTER('Calendar', 'Calendar'[Date] >= LastDay - 1825), "Preset", "5Y", "Preset Order", 6, "Date", 'Calendar'[Date])
+				)
+

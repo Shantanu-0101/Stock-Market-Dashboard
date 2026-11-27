@@ -6,8 +6,7 @@ shared — fonts, margins, hover behaviour, grid colour, the empty-state figure
 and the "window too long for this range" caption — lives here, so changing the
 look of the dashboard is a one-file edit rather than eight.
 
-No Streamlit import anywhere in this package: the PDF generator and the
-notebook call the same functions the app does.
+The PDF generator and the notebook call these same functions.
 """
 
 from __future__ import annotations
@@ -113,7 +112,7 @@ def apply_theme(
     Every chart function ends with this call. ``caption`` is drawn as a small
     muted annotation under the plot, which is where the "SMA 200 needs 200
     rows" notes and the correlation-method footnote go: that text belongs to
-    the figure, not to the Streamlit page, so it survives into the PDF and the
+    the figure, not to the page around it, so it survives into the PDF and the
     exported HTML.
     """
     # The horizontal legend sits above the plot area and grows upward into the
@@ -172,7 +171,7 @@ def empty_figure(
 
     Returned instead of raising whenever a chart has no data to draw — a
     one-week range asked for a monthly heatmap, a single ticker asked for a
-    correlation matrix. The app can then render the result unconditionally and
+    correlation matrix. The caller can then render the result unconditionally and
     the user reads why the panel is blank, rather than seeing an empty set of
     axes or a traceback.
     """

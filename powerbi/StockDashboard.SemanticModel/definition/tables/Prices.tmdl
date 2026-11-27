@@ -1,0 +1,580 @@
+table Prices
+	lineageTag: c9a02735-b40a-4e6a-8505-66e7b76f9218
+
+	measure 'Open Price' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[Open]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: 83c2e989-fdfe-4ec3-9296-15f3e7f019ee
+
+	measure 'High Price' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[High]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: 4290d4d0-291c-4248-8490-bed6ce573706
+
+	measure 'Low Price' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[Low]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: 4bd76768-5ab1-41a4-97f7-3ea50d42c940
+
+	measure 'Close Price' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[Close]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: 2488a45d-581f-46e9-92f5-0c7109dd45dc
+
+	measure 'Shares Traded' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[Volume]))
+		formatString: #,##0
+		displayFolder: Chart series
+		lineageTag: bd0918be-c24f-4308-8732-80c41d710244
+
+	measure 'Average Volume 20D' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[VOL_SMA_20]))
+		formatString: #,##0
+		displayFolder: Chart series
+		lineageTag: 424fc3c7-d72b-456d-82ad-777c534bf197
+
+	measure 'SMA 20' = IF(HASONEVALUE(Tickers[Ticker]) && "SMA 20" IN VALUES(Overlay[Overlay]), SUM(Prices[SMA_20]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: ba0e5bb5-5934-4dfd-8b3f-435482cb9fd4
+
+	measure 'SMA 50' = IF(HASONEVALUE(Tickers[Ticker]) && "SMA 50" IN VALUES(Overlay[Overlay]), SUM(Prices[SMA_50]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: ff0874cd-394f-40e3-9bb7-e0e9f509680c
+
+	measure 'SMA 200' = IF(HASONEVALUE(Tickers[Ticker]) && "SMA 200" IN VALUES(Overlay[Overlay]), SUM(Prices[SMA_200]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: ba9174f0-b463-401c-b3ef-b2d1101dab8e
+
+	measure 'EMA 12' = IF(HASONEVALUE(Tickers[Ticker]) && "EMA 12" IN VALUES(Overlay[Overlay]), SUM(Prices[EMA_12]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: 5b612b02-a362-410b-ae2a-6c80bb9be7b4
+
+	measure 'EMA 26' = IF(HASONEVALUE(Tickers[Ticker]) && "EMA 26" IN VALUES(Overlay[Overlay]), SUM(Prices[EMA_26]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: ddbc7391-9895-4edb-affe-07beec13173e
+
+	measure 'Bollinger Upper' = IF(HASONEVALUE(Tickers[Ticker]) && "Bollinger Bands" IN VALUES(Overlay[Overlay]), SUM(Prices[BB_UPPER]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: dfb603b7-d40b-4a50-aedd-aeb0429c7b4a
+
+	measure 'Bollinger Lower' = IF(HASONEVALUE(Tickers[Ticker]) && "Bollinger Bands" IN VALUES(Overlay[Overlay]), SUM(Prices[BB_LOWER]))
+		formatString: #,##0.00
+		displayFolder: Chart series
+		lineageTag: 4facd69d-8ef8-4066-8d34-6e41eb0acbbc
+
+	measure 'MACD Line' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[MACD]))
+		formatString: 0.00
+		displayFolder: Chart series
+		lineageTag: ab6a3ffa-4349-4299-94e7-9211f4b69dcc
+
+	measure 'MACD Signal' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[MACD_SIGNAL]))
+		formatString: 0.00
+		displayFolder: Chart series
+		lineageTag: 19aec802-a933-43f2-9062-eebc302fc5e1
+
+	measure 'MACD Histogram' = IF(HASONEVALUE(Tickers[Ticker]), SUM(Prices[MACD_HIST]))
+		formatString: 0.00
+		displayFolder: Chart series
+		lineageTag: cd1e481c-8470-4592-9767-9484270c9760
+
+	measure RSI =
+			IF(
+			    HASONEVALUE(Tickers[Ticker]),
+			    IF(
+			        SELECTEDVALUE('RSI Formula'[Formula], "Spec (rolling mean)") = "Wilder (standard)",
+			        SUM(Prices[RSI_14_WILDER]),
+			        SUM(Prices[RSI_14])
+			    )
+			)
+		formatString: 0.0
+		displayFolder: Chart series
+		lineageTag: 410d4501-be2d-4fe7-b9aa-dd531c9d8226
+
+	measure 'RSI Overbought' = IF(NOT ISBLANK([RSI]), 70)
+		formatString: 0
+		displayFolder: Chart series
+		lineageTag: 3edf71f8-62df-4e59-b4cb-050e7fb8c0ae
+
+	measure 'RSI Oversold' = IF(NOT ISBLANK([RSI]), 30)
+		formatString: 0
+		displayFolder: Chart series
+		lineageTag: bbf6b527-8281-43eb-8ba4-3039349b2e52
+
+	measure 'Last Close' =
+			VAR LastDay = MAX(Prices[Date])
+			RETURN IF(HASONEVALUE(Tickers[Ticker]), CALCULATE(SUM(Prices[Close]), Prices[Date] = LastDay))
+		formatString: #,##0.00
+		displayFolder: KPI
+		lineageTag: 9e25635c-63cf-4907-a1a6-77abb5811585
+
+	measure 'Daily Change' =
+			VAR LastDay = MAX(Prices[Date])
+			RETURN
+			    IF(
+			        HASONEVALUE(Tickers[Ticker]) && COUNTROWS(Prices) > 1,
+			        CALCULATE(SUM(Prices[DAILY_RETURN]), Prices[Date] = LastDay)
+			    )
+		formatString: +0.00%;-0.00%;0.00%
+		displayFolder: KPI
+		lineageTag: 57e09ec6-ac16-4d07-9bb1-cade910644b4
+
+	measure 'Period Return' =
+			VAR FirstDay = MIN(Prices[Date])
+			VAR FirstClose = CALCULATE(SUM(Prices[Close]), Prices[Date] = FirstDay)
+			RETURN IF(HASONEVALUE(Tickers[Ticker]) && COUNTROWS(Prices) > 1, DIVIDE([Last Close], FirstClose) - 1)
+		formatString: +0.00%;-0.00%;0.00%
+		displayFolder: KPI
+		lineageTag: 8e8f7996-72fd-44c2-9048-ab3fe87a8769
+
+	measure 'YTD Return' =
+			VAR LastDay = MAX(Prices[Date])
+			VAR Boundary = DATE(YEAR(LastDay), 1, 1)
+			VAR PriorDay =
+			    CALCULATE(
+			        MAX(Prices[Date]),
+			        REMOVEFILTERS('Calendar'), REMOVEFILTERS('Date Range'),
+			        Prices[Date] < Boundary
+			    )
+			VAR FirstOfYear =
+			    CALCULATE(
+			        MIN(Prices[Date]),
+			        REMOVEFILTERS('Calendar'), REMOVEFILTERS('Date Range'),
+			        Prices[Date] >= Boundary
+			    )
+			VAR BaseDay = COALESCE(PriorDay, FirstOfYear)
+			VAR BaseClose =
+			    CALCULATE(
+			        SUM(Prices[Close]),
+			        REMOVEFILTERS('Calendar'), REMOVEFILTERS('Date Range'),
+			        Prices[Date] = BaseDay
+			    )
+			RETURN IF(HASONEVALUE(Tickers[Ticker]) && NOT ISBLANK(LastDay), DIVIDE([Last Close], BaseClose) - 1)
+		formatString: +0.00%;-0.00%;0.00%
+		displayFolder: KPI
+		lineageTag: f99d50f3-b1b3-4610-b4da-57ade12059fd
+
+	measure Volatility =
+			VAR FirstDay = MIN(Prices[Date])
+			VAR Later = FILTER(Prices, Prices[Date] > FirstDay && NOT ISBLANK(Prices[DAILY_RETURN]))
+			RETURN
+			    IF(
+			        HASONEVALUE(Tickers[Ticker]) && COUNTROWS(Later) >= 2,
+			        STDEVX.S(Later, Prices[DAILY_RETURN]) * SQRT(SELECTEDVALUE(Tickers[PeriodsPerYear]))
+			    )
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: c086190e-621c-41f6-b4eb-9ea82509f45a
+
+	measure 'Price Card' =
+			VAR Amount = [Last Close]
+			RETURN
+			    IF(
+			        HASONEVALUE(Tickers[Ticker]),
+			        IF(
+			            ISBLANK(Amount),
+			            "—",
+			            VAR Symbol = SELECTEDVALUE(Tickers[CurrencySymbol])
+			            -- the engine trims trailing spaces, so "Rs " arrives as "Rs"
+			            RETURN Symbol & IF(LEN(Symbol) > 1, " ", "") & FORMAT(Amount, "#,##0.00")
+			        )
+			    )
+		displayFolder: KPI
+		lineageTag: 0934f0d9-0b5a-430d-96f2-c5b6097db3bd
+
+	measure '52W High Card' =
+			VAR Amount = SELECTEDVALUE(Tickers[Week52High])
+			RETURN
+			    IF(
+			        HASONEVALUE(Tickers[Ticker]),
+			        IF(
+			            ISBLANK(Amount),
+			            "—",
+			            VAR Symbol = SELECTEDVALUE(Tickers[CurrencySymbol])
+			            -- the engine trims trailing spaces, so "Rs " arrives as "Rs"
+			            RETURN Symbol & IF(LEN(Symbol) > 1, " ", "") & FORMAT(Amount, "#,##0.00")
+			        )
+			    )
+		displayFolder: KPI
+		lineageTag: 590204f4-b31d-4af7-bb60-1b598e679392
+
+	measure '52W Low Card' =
+			VAR Amount = SELECTEDVALUE(Tickers[Week52Low])
+			RETURN
+			    IF(
+			        HASONEVALUE(Tickers[Ticker]),
+			        IF(
+			            ISBLANK(Amount),
+			            "—",
+			            VAR Symbol = SELECTEDVALUE(Tickers[CurrencySymbol])
+			            -- the engine trims trailing spaces, so "Rs " arrives as "Rs"
+			            RETURN Symbol & IF(LEN(Symbol) > 1, " ", "") & FORMAT(Amount, "#,##0.00")
+			        )
+			    )
+		displayFolder: KPI
+		lineageTag: 2653d018-e4c6-45e1-a023-e16604f584ba
+
+	measure 'Daily Change Card' = IF(HASONEVALUE(Tickers[Ticker]), IF(ISBLANK([Daily Change]), "—", FORMAT([Daily Change], "+0.00%;-0.00%;0.00%")))
+		displayFolder: KPI
+		lineageTag: 52dc0512-3836-40cd-8ddb-b869ce44bb39
+
+	measure 'YTD Card' = IF(HASONEVALUE(Tickers[Ticker]), IF(ISBLANK([YTD Return]), "—", FORMAT([YTD Return], "+0.00%;-0.00%;0.00%")))
+		displayFolder: KPI
+		lineageTag: 51f12638-7c07-447b-8427-6007ca1876a8
+
+	measure 'Volatility Card' = IF(HASONEVALUE(Tickers[Ticker]), IF(ISBLANK([Volatility]), "—", FORMAT([Volatility], "0.00%")))
+		displayFolder: KPI
+		lineageTag: 2078755f-4752-40d1-8f0d-5e9530515798
+
+	measure 'Market Cap Card' = SELECTEDVALUE(Tickers[MarketCapText])
+		displayFolder: KPI
+		lineageTag: dd0a7660-67cb-4a70-8162-4aca7e3a3f4c
+
+	measure 'PE Card' =
+			VAR Ratio = SELECTEDVALUE(Tickers[PERatio])
+			RETURN IF(HASONEVALUE(Tickers[Ticker]), IF(ISBLANK(Ratio), "—", FORMAT(Ratio, "0.00")))
+		displayFolder: KPI
+		lineageTag: b8c18aae-935d-4c06-95e1-09846e2620c7
+
+	measure 'Avg Volume Card' = SELECTEDVALUE(Tickers[AvgVolumeText])
+		displayFolder: KPI
+		lineageTag: 58068c32-cfd5-488c-9a4c-e536824606c2
+
+	measure 'Range Note' =
+			IF(
+			    HASONEVALUE(Tickers[Ticker]),
+			    SELECTEDVALUE(Tickers[Name]) & ": " & COUNTROWS(Prices) & " trading days, "
+			        & FORMAT(MIN(Prices[Date]), "dd MMM yyyy") & " to " & FORMAT(MAX(Prices[Date]), "dd MMM yyyy")
+			        & ". Period return " & FORMAT([Period Return], "+0.00%;-0.00%;0.00%")
+			        & ". 52-week range from " & SELECTEDVALUE(Tickers[RangeSource]) & ".",
+			    "Select one ticker."
+			)
+		displayFolder: Text
+		lineageTag: 4f0cca43-f891-4b95-b1f1-c1bc076fe056
+
+	measure 'Indicator Summary' = SELECTEDVALUE(Tickers[Summary])
+		displayFolder: Text
+		lineageTag: 4d09df39-652b-4188-bb3c-270cd760c8d9
+
+	measure 'Base 100' =
+			VAR Chosen = COUNTROWS(ALLSELECTED(Tickers[Ticker]))
+			VAR PerDay =
+			    CALCULATETABLE(
+			        ADDCOLUMNS(
+			            SUMMARIZE(Prices, Prices[Date]),
+			            "@Tickers", CALCULATE(DISTINCTCOUNT(Prices[Ticker]))
+			        ),
+			        ALLSELECTED()
+			    )
+			VAR CommonStart = MINX(FILTER(PerDay, [@Tickers] = Chosen), Prices[Date])
+			VAR BaseClose =
+			    CALCULATE(
+			        SUM(Prices[Close]),
+			        REMOVEFILTERS('Calendar'), REMOVEFILTERS('Date Range'),
+			        Prices[Date] = CommonStart
+			    )
+			RETURN
+			    IF(
+			        HASONEVALUE(Tickers[Ticker]) && NOT ISBLANK(CommonStart) && MAX(Prices[Date]) >= CommonStart,
+			        DIVIDE(SUM(Prices[Close]), BaseClose) * 100
+			    )
+		formatString: 0.0
+		displayFolder: Analysis
+		lineageTag: ae3c1878-ab18-4f40-99f0-2c7b9ab860ba
+
+	measure 'Monthly Return' =
+			IF(
+			    HASONEVALUE(Tickers[Ticker]) && NOT ISEMPTY(Prices),
+			    PRODUCTX(Prices, 1 + Prices[DAILY_RETURN]) - 1
+			)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Analysis
+		lineageTag: 76a521da-140d-4ca4-a8c7-e35a6fa9bf1a
+
+	measure 'Monthly Return Colour' =
+			VAR R = [Monthly Return]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(R), BLANK(),
+			        R >= 0.10, "#4ADE80",
+			        R >= 0.03, "#86EFAC",
+			        R >= 0, "#DCFCE7",
+			        R > -0.03, "#FEE2E2",
+			        R > -0.10, "#FCA5A5",
+			        "#F87171"
+			    )
+		displayFolder: Analysis
+		lineageTag: 642aecf7-2438-44ca-9c45-f03997bcf4f9
+
+	measure Days = IF(HASONEVALUE(Tickers[Ticker]), COUNT(Prices[DAILY_RETURN]))
+		formatString: #,##0
+		displayFolder: Analysis
+		lineageTag: dffc6d73-0ae7-448e-8351-accc83cdc4b8
+
+	measure Correlation =
+			VAR A = SELECTEDVALUE('Correlation Row'[Row Ticker])
+			VAR B = SELECTEDVALUE('Correlation Column'[Column Ticker])
+			VAR FirstA = CALCULATE(MIN(Prices[Date]), REMOVEFILTERS(Tickers), Prices[Ticker] = A)
+			VAR FirstB = CALCULATE(MIN(Prices[Date]), REMOVEFILTERS(Tickers), Prices[Ticker] = B)
+			VAR ReturnsA =
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(
+			            FILTER(Prices, Prices[Date] > FirstA && NOT ISBLANK(Prices[DAILY_RETURN])),
+			            "@Day", Prices[Date],
+			            "@X", Prices[DAILY_RETURN]
+			        ),
+			        REMOVEFILTERS(Tickers),
+			        Prices[Ticker] = A
+			    )
+			VAR Joined =
+			    ADDCOLUMNS(
+			        ReturnsA,
+			        "@Y",
+			            VAR D = [@Day]
+			            RETURN
+			                CALCULATE(
+			                    SUM(Prices[DAILY_RETURN]),
+			                    ALL(Prices),
+			                    REMOVEFILTERS(Tickers),
+			                    Prices[Ticker] = B,
+			                    Prices[Date] = D
+			                )
+			    )
+			VAR Pairs = FILTER(Joined, NOT ISBLANK([@Y]) && [@Day] > FirstB)
+			VAR MeanX = AVERAGEX(Pairs, [@X])
+			VAR MeanY = AVERAGEX(Pairs, [@Y])
+			VAR Cov = SUMX(Pairs, ([@X] - MeanX) * ([@Y] - MeanY))
+			VAR SpreadX = SUMX(Pairs, ([@X] - MeanX) ^ 2)
+			VAR SpreadY = SUMX(Pairs, ([@Y] - MeanY) ^ 2)
+			RETURN IF(COUNTROWS(Pairs) >= 2, DIVIDE(Cov, SQRT(SpreadX * SpreadY)))
+		formatString: 0.00
+		displayFolder: Analysis
+		lineageTag: 641f0f0c-6aaf-4533-b1a8-ed6f184f85db
+
+	measure 'Correlation Colour' =
+			VAR C = [Correlation]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        ISBLANK(C), BLANK(),
+			        C >= 0.7, "#FB923C",
+			        C >= 0.4, "#FDBA74",
+			        C >= 0.15, "#FFEDD5",
+			        C > -0.15, "#FFFFFF",
+			        "#BFDBFE"
+			    )
+		displayFolder: Analysis
+		lineageTag: a0af6715-ddaa-4b73-841a-33a4e0f96583
+
+	column Date
+		dataType: dateTime
+		formatString: dd MMM yyyy
+		lineageTag: b1aba478-c02b-44b6-b7d9-30c79581922e
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Ticker
+		dataType: string
+		lineageTag: a52f187c-0865-4305-8fd1-eb3c3dffb090
+		summarizeBy: none
+		sourceColumn: Ticker
+
+	column Open
+		dataType: double
+		isHidden
+		lineageTag: 48f09bac-56c7-4377-8aac-989fffe057a6
+		summarizeBy: none
+		sourceColumn: Open
+
+	column High
+		dataType: double
+		isHidden
+		lineageTag: 4bd32831-d3b4-445e-8d22-4b55cf8d82c9
+		summarizeBy: none
+		sourceColumn: High
+
+	column Low
+		dataType: double
+		isHidden
+		lineageTag: 74a5802f-c1fc-4876-b3c3-113e32e75e90
+		summarizeBy: none
+		sourceColumn: Low
+
+	column Close
+		dataType: double
+		isHidden
+		lineageTag: e2fc15d7-6f3d-43db-b6dc-5d6c5f1b6016
+		summarizeBy: none
+		sourceColumn: Close
+
+	column Volume
+		dataType: int64
+		isHidden
+		lineageTag: 83ca58c2-4d6f-403c-ba5f-81a66f8fbb1e
+		summarizeBy: none
+		sourceColumn: Volume
+
+	column SMA_20
+		dataType: double
+		isHidden
+		lineageTag: 78ecafb8-4fa5-4df4-ac98-8b13085d6a3e
+		summarizeBy: none
+		sourceColumn: SMA_20
+
+	column SMA_50
+		dataType: double
+		isHidden
+		lineageTag: 8cd82f8f-8fc0-4d57-95d5-73a420a8fae5
+		summarizeBy: none
+		sourceColumn: SMA_50
+
+	column SMA_200
+		dataType: double
+		isHidden
+		lineageTag: bd0f1609-65db-4696-b24b-4ba4912400e4
+		summarizeBy: none
+		sourceColumn: SMA_200
+
+	column EMA_12
+		dataType: double
+		isHidden
+		lineageTag: 2b5288f5-423c-4551-a471-c9b784292d9e
+		summarizeBy: none
+		sourceColumn: EMA_12
+
+	column EMA_26
+		dataType: double
+		isHidden
+		lineageTag: 1aaf1029-8210-4d28-8959-d79131b1d21e
+		summarizeBy: none
+		sourceColumn: EMA_26
+
+	column RSI_14
+		dataType: double
+		isHidden
+		lineageTag: 4405595c-d83f-4d62-b00e-b169d404115b
+		summarizeBy: none
+		sourceColumn: RSI_14
+
+	column MACD
+		dataType: double
+		isHidden
+		lineageTag: da57c045-be0d-4f02-ab3f-1207cc6c1a6b
+		summarizeBy: none
+		sourceColumn: MACD
+
+	column MACD_SIGNAL
+		dataType: double
+		isHidden
+		lineageTag: 380e31a6-879e-43b4-9e13-a086b9767241
+		summarizeBy: none
+		sourceColumn: MACD_SIGNAL
+
+	column MACD_HIST
+		dataType: double
+		isHidden
+		lineageTag: 607abb2c-5151-4be0-9b45-2fce9e1754b3
+		summarizeBy: none
+		sourceColumn: MACD_HIST
+
+	column BB_UPPER
+		dataType: double
+		isHidden
+		lineageTag: 79ed772e-5973-47ac-9890-f22627d244b0
+		summarizeBy: none
+		sourceColumn: BB_UPPER
+
+	column BB_MIDDLE
+		dataType: double
+		isHidden
+		lineageTag: cf737bf5-a0ad-4106-be2c-5463f4bebf6f
+		summarizeBy: none
+		sourceColumn: BB_MIDDLE
+
+	column BB_LOWER
+		dataType: double
+		isHidden
+		lineageTag: 8bd9dc43-8762-43a9-a564-699141f9acfe
+		summarizeBy: none
+		sourceColumn: BB_LOWER
+
+	column BB_PERCENT_B
+		dataType: double
+		isHidden
+		lineageTag: 0595cb64-643e-4bc7-83fe-34939a7f3e7a
+		summarizeBy: none
+		sourceColumn: BB_PERCENT_B
+
+	column BB_BANDWIDTH
+		dataType: double
+		isHidden
+		lineageTag: 3f5d3037-09a2-43ed-b641-285a14808ce7
+		summarizeBy: none
+		sourceColumn: BB_BANDWIDTH
+
+	column DAILY_RETURN
+		dataType: double
+		isHidden
+		lineageTag: c275f55f-d973-4386-84be-9153bdfd850d
+		summarizeBy: none
+		sourceColumn: DAILY_RETURN
+
+	column CUM_RETURN
+		dataType: double
+		isHidden
+		lineageTag: a5c23ee8-5c73-4773-9722-18aa7e6895aa
+		summarizeBy: none
+		sourceColumn: CUM_RETURN
+
+	column DRAWDOWN
+		dataType: double
+		isHidden
+		lineageTag: fbbd892f-8bd6-4a04-a21d-9f1a3bd8bdc9
+		summarizeBy: none
+		sourceColumn: DRAWDOWN
+
+	column VOL_SMA_20
+		dataType: double
+		isHidden
+		lineageTag: b51bac36-8206-472f-b98b-14eb1b3ff742
+		summarizeBy: none
+		sourceColumn: VOL_SMA_20
+
+	column ROLL_VOL_21
+		dataType: double
+		isHidden
+		lineageTag: 35e7d1b0-79fc-43c6-8b6f-f69e33e32809
+		summarizeBy: none
+		sourceColumn: ROLL_VOL_21
+
+	column RSI_14_WILDER
+		dataType: double
+		isHidden
+		lineageTag: 86310f7d-9bd8-462d-b40e-7c464373af9d
+		summarizeBy: none
+		sourceColumn: RSI_14_WILDER
+
+	column RETURN_BIN
+		dataType: double
+		formatString: 0.0
+		lineageTag: 1755c97d-faf8-4713-a6da-cdf7709f28f7
+		summarizeBy: none
+		sourceColumn: RETURN_BIN
+
+	partition Prices = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\prices.csv"), [Delimiter=",", Columns=28, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Blanks = Table.ReplaceValue(Headers, "", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),
+				    Typed = Table.TransformColumnTypes(Blanks, {{"Date", type date}, {"Ticker", type text}, {"Open", type number}, {"High", type number}, {"Low", type number}, {"Close", type number}, {"Volume", Int64.Type}, {"SMA_20", type number}, {"SMA_50", type number}, {"SMA_200", type number}, {"EMA_12", type number}, {"EMA_26", type number}, {"RSI_14", type number}, {"MACD", type number}, {"MACD_SIGNAL", type number}, {"MACD_HIST", type number}, {"BB_UPPER", type number}, {"BB_MIDDLE", type number}, {"BB_LOWER", type number}, {"BB_PERCENT_B", type number}, {"BB_BANDWIDTH", type number}, {"DAILY_RETURN", type number}, {"CUM_RETURN", type number}, {"DRAWDOWN", type number}, {"VOL_SMA_20", type number}, {"ROLL_VOL_21", type number}, {"RSI_14_WILDER", type number}, {"RETURN_BIN", type number}}, "en-US")
+				in
+				    Typed
+
