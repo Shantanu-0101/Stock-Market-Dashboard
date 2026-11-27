@@ -304,3 +304,25 @@ included), `check_charts.py` all passed, `check_export.py` 36 passed;
 `build_notebook.py --check` reports the notebook matches the script. The
 export was not re-run, so `powerbi/data/` and the report are unchanged. The
 README was not viewed on GitHub.
+
+## 27 Nov 2026, 22:35 — deliverables/ trimmed to the four deliverables
+
+- `deliverables/` now holds only `walkthrough.py`, `walkthrough.ipynb`,
+  `Project_Report.pdf` and `screenshots/`.
+- The three check scripts moved to `tests/`, unchanged apart from the paths
+  in their docstrings. Their chart previews now go to `tests/chart_preview/`
+  (gitignored, and the preview launch entry follows it).
+- `build_notebook.py` and `generate_report.py` removed. Before removing the
+  generator, the report was rebuilt so it names `tests/check_indicators.py`,
+  lists a Tests row under Components, and no longer mentions presets or
+  nbclient; that version of the generator is in the commit before the removal.
+- `nbclient` dropped from `requirements.txt`; only the notebook builder used it.
+  The walkthrough header in the script and the notebook now says the two are
+  kept in step by hand. README, SPEC structure and a `config.py` docstring
+  updated. An unused `deliverables/*_export.csv` ignore rule removed.
+
+**Check:** run from `tests/`: `check_indicators.py` 82 passed (live data
+included), `check_charts.py` all passed, `check_export.py` 36 passed. The
+regenerated report has 10 pages like before; its text differs from the old
+one only in the four lines above, and page 5 was looked at with the new row.
+The notebook file is still valid JSON. The notebook was not re-run.

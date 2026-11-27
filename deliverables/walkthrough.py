@@ -19,8 +19,8 @@
 # python deliverables/walkthrough.py
 # ```
 #
-# The notebook `walkthrough.ipynb` is generated from this script by
-# `build_notebook.py`. Edit the script, then rebuild the notebook.
+# The notebook `walkthrough.ipynb` holds the same steps with their output
+# saved. Nothing rebuilds one from the other, so change both together.
 
 # %% [markdown]
 # ## Setup

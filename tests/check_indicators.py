@@ -1,7 +1,7 @@
 """Phase 3 verification: every indicator against a hand-computed answer.
 
 Plain asserts, no test framework — the spec's dependency list has none and
-this has to stay runnable with ``python deliverables/check_indicators.py``
+this has to stay runnable with ``python tests/check_indicators.py``
 from the project root. Each block states the expected value and why, so the
 report can cite this file as the evidence that the formulas match SPEC.md.
 
@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# Scripts in deliverables/ are run directly, so the project root is not on
+# Scripts in tests/ are run directly, so the project root is not on
 # sys.path. Put it there before importing src, and do it the same way in every
 # script under this folder.
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]

@@ -3,7 +3,7 @@
 Runs on synthetic data, so it needs no network. Building the report with its
 charts does need kaleido and a local Chrome::
 
-    python deliverables/check_export.py
+    python tests/check_export.py
 
 Add ``--out <file.pdf>`` to keep the report it builds and look at it.
 

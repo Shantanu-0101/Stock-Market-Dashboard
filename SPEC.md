@@ -109,8 +109,9 @@ stock-market-dashboard/
 ├── deliverables/
 │   ├── walkthrough.ipynb               # Jupyter notebook walkthrough
 │   ├── walkthrough.py                  # Script version
-│   ├── generate_report.py             # Project report generator
-│   └── Project_Report.pdf             # Generated report
+│   ├── screenshots/                    # Power BI pages used in the report
+│   └── Project_Report.pdf             # Project report
+├── tests/                              # Checks for indicators, charts and export
 ├── requirements.txt
 ├── .gitignore
 └── README.md
