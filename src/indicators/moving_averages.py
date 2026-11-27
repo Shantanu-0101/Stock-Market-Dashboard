@@ -1,7 +1,7 @@
 """Simple and exponential moving averages.
 
 Both are the spec's formulas verbatim. Pure functions on a ``pd.Series`` with
-no Streamlit or Plotly import, so the app, the notebook and the PDF generator
+no Plotly import, so the data export, the notebook and the PDF generator
 all call the same code.
 """
 

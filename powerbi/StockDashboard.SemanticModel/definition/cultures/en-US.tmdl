@@ -1,0 +1,305 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "prices.close_price": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "Close Price"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Close": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.indicator_summary": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "Indicator Summary"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Last-year indicator summary (spec RSI). Not investment advice.": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.high_price": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "High Price"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "High": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.low_price": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "Low Price"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Low": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.open_price": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "Open Price"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Open": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.shares_traded": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "Shares Traded"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Volume": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.average_volume_20d": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "Average Volume 20D"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "20-day average": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.rsi_overbought": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "RSI Overbought"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Overbought 70": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.rsi_oversold": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "RSI Oversold"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Oversold 30": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.macd_histogram": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "MACD Histogram"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Histogram": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.macd_line": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "MACD Line"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "MACD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.macd_signal": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "MACD Signal"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Signal": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "prices.return_bin": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Prices",
+			          "ConceptualProperty": "RETURN_BIN"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Daily return, % (bar start)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "correlation_row.row_ticker": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Correlation Row",
+			          "ConceptualProperty": "Row Ticker"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ticker": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

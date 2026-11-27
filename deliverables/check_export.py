@@ -35,6 +35,7 @@ from src.export.commentary import (
     volatility_sentence,
 )
 from src.export.pdf_report import build_report
+from src.export.powerbi_data import build_tables, summary_window
 from src.indicators import enrich, indicator_columns
 from src.kpis import kpi_summary
 
@@ -170,6 +171,33 @@ def main() -> int:
         check("empty frame is refused", False, "no error raised")
     except ValueError:
         check("empty frame is refused", True)
+
+    print("\nPower BI tables")
+    raw = {"AAA": frame(600), "BBB": frame(30)}
+    prices, tickers, enriched = build_tables(raw, {"BBB": {"currency": "INR"}})
+    check("one price row per ticker per day", len(prices) == 630, str(len(prices)))
+    check("one row per ticker", list(tickers["Ticker"]) == ["AAA", "BBB"])
+    check(
+        "every indicator column is exported",
+        set(indicator_columns()) <= set(prices.columns),
+    )
+    check(
+        "both RSI formulas are exported",
+        {"RSI_14", "RSI_14_WILDER"} <= set(prices.columns),
+    )
+    binned = prices.dropna(subset=["DAILY_RETURN"])
+    offset = binned["DAILY_RETURN"] * 100 - binned["RETURN_BIN"]
+    check("returns fall inside their bin", bool(offset.between(-1e-9, 0.5).all()))
+    check("rupee ticker is labelled", tickers["CurrencySymbol"].iloc[1] == "Rs ")
+    year = summary_window(enriched["AAA"])
+    check(
+        "summary window is one year",
+        (year.index.max() - year.index.min()).days <= 365 and len(year) < 600,
+    )
+    check(
+        "SMA 200 is filled from the window's first row",
+        not pd.isna(year["SMA_200"].iloc[0]),
+    )
 
     print(f"\n{_PASSES} passed, {len(_FAILURES)} failed")
     for failure in _FAILURES:

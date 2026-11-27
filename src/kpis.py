@@ -1,10 +1,8 @@
-"""The KPI row as data, shared by the dashboard and the PDF report.
+"""The KPI cards as data, for the PDF report.
 
-Both surfaces print the same eight cards. Deciding what goes in each -- which
-source a figure comes from, what it falls back to -- happens here once, so the
-report a user downloads cannot disagree with the page they downloaded it from.
-
-No Streamlit import: the app draws these as metric cards, the PDF as a table.
+Deciding what goes in each card -- which source a figure comes from, what it
+falls back to -- happens here. The Power BI report computes the same cards in
+DAX and is checked against these values.
 """
 
 from __future__ import annotations

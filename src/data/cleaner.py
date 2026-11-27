@@ -10,8 +10,7 @@ to assume the contract :func:`clean_ohlcv` enforces:
 * at least one row
 
 Anything that cannot be made to satisfy that raises :class:`DataQualityError`,
-which the app catches and turns into a readable error panel. No module here
-imports streamlit, so the cleaner is usable from the notebook and the scripts.
+which the export script reports against the ticker that caused it.
 """
 
 from __future__ import annotations
@@ -28,7 +27,7 @@ class DataQualityError(ValueError):
     """Raised when a fetched frame cannot be made usable.
 
     Carries a message written for the end user, not for a log file, because
-    the Streamlit app surfaces ``str(exc)`` directly.
+    the scripts print ``str(exc)`` directly.
     """
 
 

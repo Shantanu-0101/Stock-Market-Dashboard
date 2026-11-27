@@ -217,3 +217,26 @@ RELIANCE.NS 1Y and BTC-USD 1W, one page each. In the running app, both export
 buttons appear and every tab's legend clears its title at 1440 wide. The
 button callables were run from `app.main()` on a worker thread; the browser
 download click itself was not exercised.
+
+## 27 Nov 2026, 09:31 — dashboard moved to Power BI
+
+Plan change: the Streamlit app is removed and the dashboard is a Power BI
+project. SPEC.md and IMPLEMENTATION_PLAN.md are updated to match.
+
+- **Removed** `app.py`, `.streamlit/`, the `streamlit` requirement, the cache
+  decorator in `fetcher.py` and the dashboard launch setting.
+- **`src/export/powerbi_data.py`** — fetches five years for each ticker, writes
+  `prices.csv` and `tickers.csv`, and one PDF per ticker into `reports/`.
+- **`powerbi/StockDashboard.pbip`** — 8 tables, 41 measures, five pages.
+
+Judgment calls: indicators stay in Python and DAX covers only date-dependent
+figures; correlation is pairwise on common dates (the Plotly matrix joins all
+tickers at once, so its numbers differ slightly); no custom candlestick visual
+was added, so page 2 shows OHLC as lines.
+
+**Check:** opened in Power BI Desktop 2.160, refreshed, all five pages looked
+at, project saved. For the 1Y range, price, daily change, YTD, period return
+and volatility matched Python for all five tickers; pairwise correlations
+matched to six decimals; RSI (both formulas) and SMA 20 matched the CSV.
+`check_export.py` 36, `check_indicators.py` 82 and `check_charts.py` passing.
+Slicer clicks other than page changes were not exercised by hand.

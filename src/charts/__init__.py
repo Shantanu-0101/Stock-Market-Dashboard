@@ -1,9 +1,8 @@
 """Every chart in the dashboard, as pure ``(data, options) -> Figure`` functions.
 
-No module in this package imports Streamlit. That is the point: ``app.py``,
-the PDF generator and the notebook all call the same functions and get the
-same figure, so a chart cannot look one way in the dashboard and another in
-the deliverables.
+The PDF generator and the notebook call the same functions and get the same
+figure, so a chart cannot look one way in the report and another in the
+walkthrough. The Power BI report draws its own visuals.
 
 Each function takes already-computed data -- a frame from
 :func:`src.indicators.enrich`, or a mapping of symbol to frame from

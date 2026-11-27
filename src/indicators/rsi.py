@@ -1,7 +1,7 @@
 """Relative Strength Index, in both the spec's form and Wilder's original.
 
 The two give visibly different numbers on the same series, so which one is on
-screen is a sidebar choice (decision 0.3 of IMPLEMENTATION_PLAN.md) defaulting
+screen is the user's choice (decision 0.3 of IMPLEMENTATION_PLAN.md) defaulting
 to the spec's :func:`rsi`.
 """
 

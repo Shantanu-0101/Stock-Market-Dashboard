@@ -1,0 +1,5 @@
+expression DataFolder = "C:\Users\DELL\OneDrive\Desktop\Stock-Market-Dashboard\powerbi\data" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 25e8f1de-13cf-496f-b600-3d446d49d970
+
+	annotation PBI_ResultType = Text
+

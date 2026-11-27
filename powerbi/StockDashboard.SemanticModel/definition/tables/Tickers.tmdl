@@ -1,0 +1,101 @@
+table Tickers
+	lineageTag: 583c9387-1fdb-40ed-96a5-a3ae343d9363
+
+	column Ticker
+		dataType: string
+		lineageTag: 2de4e44c-f223-4763-b5f4-886c80b43eb3
+		summarizeBy: none
+		sourceColumn: Ticker
+
+	column Name
+		dataType: string
+		lineageTag: e68a3974-b18a-40ae-8068-613fc047cc30
+		summarizeBy: none
+		sourceColumn: Name
+
+	column Sector
+		dataType: string
+		lineageTag: 0b5622e7-6965-4d5d-8875-fa34c6a9187c
+		summarizeBy: none
+		sourceColumn: Sector
+
+	column Exchange
+		dataType: string
+		lineageTag: 08572df9-84e4-47ca-a47c-f4437f004e93
+		summarizeBy: none
+		sourceColumn: Exchange
+
+	column CurrencySymbol
+		dataType: string
+		lineageTag: ab061571-56d2-4a44-824a-f14961dbe8d9
+		summarizeBy: none
+		sourceColumn: CurrencySymbol
+
+	column PeriodsPerYear
+		dataType: int64
+		lineageTag: ea14cac6-bf7e-4d47-8875-ffb0db22f9cb
+		summarizeBy: none
+		sourceColumn: PeriodsPerYear
+
+	column Week52High
+		dataType: double
+		lineageTag: 0266ea49-f654-4517-a14d-8ba95ca8d271
+		summarizeBy: none
+		sourceColumn: Week52High
+
+	column Week52Low
+		dataType: double
+		lineageTag: 4d334e78-5cf7-43c0-9157-ebe83438e691
+		summarizeBy: none
+		sourceColumn: Week52Low
+
+	column RangeSource
+		dataType: string
+		lineageTag: 75018be4-a614-415c-8a03-aa6d0abaef68
+		summarizeBy: none
+		sourceColumn: RangeSource
+
+	column MarketCapText
+		dataType: string
+		lineageTag: f16f6b5a-9676-4c02-8cd4-5846de6c9959
+		summarizeBy: none
+		sourceColumn: MarketCapText
+
+	column PERatio
+		dataType: double
+		lineageTag: baa231ea-7be2-41d9-ab8a-75043da1d946
+		summarizeBy: none
+		sourceColumn: PERatio
+
+	column AvgVolumeText
+		dataType: string
+		lineageTag: b5f80f44-9827-4b2b-8779-d25c9e0e33a2
+		summarizeBy: none
+		sourceColumn: AvgVolumeText
+
+	column DataTo
+		dataType: dateTime
+		formatString: dd MMM yyyy
+		lineageTag: 74b25808-130b-496d-b2eb-616e9376aa5c
+		summarizeBy: none
+		sourceColumn: DataTo
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Summary
+		dataType: string
+		lineageTag: 26fcf1d7-e01f-4825-8b3b-6fdec16ce1ee
+		summarizeBy: none
+		sourceColumn: Summary
+
+	partition Tickers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\tickers.csv"), [Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Blanks = Table.ReplaceValue(Headers, "", null, Replacer.ReplaceValue, Table.ColumnNames(Headers)),
+				    Typed = Table.TransformColumnTypes(Blanks, {{"Ticker", type text}, {"Name", type text}, {"Sector", type text}, {"Exchange", type text}, {"CurrencySymbol", type text}, {"PeriodsPerYear", Int64.Type}, {"Week52High", type number}, {"Week52Low", type number}, {"RangeSource", type text}, {"MarketCapText", type text}, {"PERatio", type number}, {"AvgVolumeText", type text}, {"DataTo", type date}, {"Summary", type text}}, "en-US")
+				in
+				    Typed
+
