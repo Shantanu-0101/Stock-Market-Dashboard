@@ -380,7 +380,7 @@ def project_understanding(pdf: Report) -> None:
             ["fpdf2", "PDF summaries and this report"],
             ["Power BI Desktop (DAX)", "Interactive dashboard: model, measures, "
              "five report pages"],
-            ["Jupyter (ipykernel, nbclient)", "The executed walkthrough notebook"],
+            ["Jupyter (ipykernel)", "The executed walkthrough notebook"],
             ["Python 3.13, git and GitHub", "Language and version control"],
         ],
         [62, 112],
@@ -408,7 +408,7 @@ def project_understanding(pdf: Report) -> None:
     pdf.para(
         f"The export carries {len(indicator_columns()) + 1} indicator columns. "
         "Each formula is checked against hand-worked values in "
-        "deliverables/check_indicators.py."
+        "tests/check_indicators.py."
     )
     pdf.heading("Design decisions", level=1)
     pdf.bullets(
@@ -494,14 +494,15 @@ def architecture(pdf: Report) -> None:
     pdf.grid(
         ["Component", "Files", "Role"],
         [
-            ["Settings", "src/config.py", "Tickers, indicator windows, presets, colours"],
+            ["Settings", "src/config.py", "Tickers, indicator windows, colours"],
             ["Data layer", "src/data/", "The only code that calls Yahoo; one cleaned "
              "frame shape"],
             ["Indicators", "src/indicators/", "Pure pandas formulas and enrich()"],
             ["Charts", "src/charts/", "Eight Plotly chart functions, one theme"],
             ["Export", "src/export/", "CSV tables, PDF summary, written commentary"],
             ["Power BI", "powerbi/", "Semantic model and report (PBIP project)"],
-            ["Deliverables", "deliverables/", "Walkthroughs, checks, this report"],
+            ["Deliverables", "deliverables/", "Walkthroughs and this report"],
+            ["Tests", "tests/", "Checks for the indicators, charts and export"],
         ],
         [30, 38, 106],
     )
