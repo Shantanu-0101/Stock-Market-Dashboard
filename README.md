@@ -10,7 +10,7 @@ No API keys are needed. Yahoo Finance data is free through `yfinance`.
 
 ![Price & Overlays page of the Power BI report](deliverables/screenshots/1_price.png)
 
-## What it does
+## What it does:
 
 1. **Fetch** daily open, high, low, close and volume (OHLCV), plus company
    details such as name, sector, market cap and P/E.
